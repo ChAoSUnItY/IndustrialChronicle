@@ -1,26 +1,42 @@
 package io.github.chaosunity.ic.blockentity;
 
-import io.github.chaosunity.ic.blocks.IVariantBlock;
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
+import io.github.chaosunity.ic.api.fluid.FluidStack;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import org.jetbrains.annotations.Nullable;
 
-public abstract class MachineBlockEntity<BE extends BlockEntity & IVariantBlockEntity<BE, B>, B extends IVariantBlock<?>>
-        extends BlockEntity implements IVariantBlockEntity<BE, B>, BlockEntityClientSerializable {
+public abstract class MachineBlockEntity extends BlockEntity implements MachineInventory, MachineFluidContainer {
     public MachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
     @Override
-    public NbtCompound toClientTag(NbtCompound tag) {
-        return writeNbt(tag);
+    public DefaultedList<FluidStack> getContainers() {
+        return null;
     }
 
     @Override
-    public void fromClientTag(NbtCompound tag) {
-        readNbt(tag);
+    public DefaultedList<ItemStack> getItems() {
+        return null;
+    }
+
+    @Override
+    public int[] getAvailableSlots(Direction side) {
+        return new int[0];
+    }
+
+    @Override
+    public boolean canInsert(int slot, ItemStack stack, @Nullable Direction dir) {
+        return false;
+    }
+
+    @Override
+    public boolean canExtract(int slot, ItemStack stack, Direction dir) {
+        return false;
     }
 }

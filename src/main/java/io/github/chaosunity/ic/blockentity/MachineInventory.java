@@ -6,7 +6,7 @@ import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.DefaultedList;
 
-public interface ImplementedInventory extends SidedInventory {
+public interface MachineInventory extends SidedInventory {
     DefaultedList<ItemStack> getItems();
 
     @Override

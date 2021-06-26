@@ -29,7 +29,7 @@ public class FluidHelper {
 
         for (var stack : stacks) {
             var fluidNBT = new NbtCompound();
-            fluidNBT.putString("ID", Registry.FLUID.getId(stack.getFluid()).toString());
+            fluidNBT.putString("ID", Registry.FLUID.getId(stack.fluid).toString());
             fluidNBT.putLong("Capacity", stack.capacity);
             fluidNBT.putLong("mB", stack.mB);
 

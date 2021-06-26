@@ -1,9 +1,9 @@
 package io.github.chaosunity.ic.blockentity;
 
+import io.github.chaosunity.ic.api.fluid.FluidContainer;
 import io.github.chaosunity.ic.api.fluid.FluidStack;
-import io.github.chaosunity.ic.api.fluid.SidedFluidContainer;
 
-public interface ImplementedFluidContainer extends SidedFluidContainer {
+public interface MachineFluidContainer extends FluidContainer {
     @Override
     default int containerSize() {
         return getContainers().size();
@@ -20,11 +20,6 @@ public interface ImplementedFluidContainer extends SidedFluidContainer {
     @Override
     default FluidStack get(int index) {
         return getContainers().get(index);
-    }
-
-    @Override
-    default long addMilliBucket(int index, long mB) {
-        return get(index).add(mB);
     }
 
     @Override

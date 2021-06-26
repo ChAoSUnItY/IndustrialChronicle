@@ -6,7 +6,7 @@ import net.minecraft.fluid.Fluids;
 public class FluidStack {
     public static final FluidStack EMPTY = new FluidStack(Fluids.EMPTY, 0, 0);
 
-    private Fluid fluid;
+    public final Fluid fluid;
     public final long capacity;
     public long mB;
 
@@ -34,18 +34,6 @@ public class FluidStack {
 
     public boolean canFullFillBucket() {
         return mB >= 1000;
-    }
-
-    public Fluid getFluid() {
-        return fluid;
-    }
-
-    public boolean changeStoredFluid(Fluid fluid) {
-        if (mB != 0)
-            return false;
-
-        this.fluid = fluid;
-        return true;
     }
 
     /**

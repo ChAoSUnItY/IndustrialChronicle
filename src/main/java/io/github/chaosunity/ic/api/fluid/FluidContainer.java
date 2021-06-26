@@ -15,13 +15,6 @@ public interface FluidContainer {
     /**
      * @param index
      * @param mB
-     * @return actual added milli buckets
-     */
-    long addMilliBucket(int index, long mB);
-
-    /**
-     * @param index
-     * @param mB
      * @return actual removed milli buckets
      */
     long removeMilliBucket(int index, long mB);
