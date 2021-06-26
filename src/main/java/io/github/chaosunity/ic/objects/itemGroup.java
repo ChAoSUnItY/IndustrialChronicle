@@ -14,7 +14,7 @@ public class itemGroup {
     public static void register() {
         ic_itemgroup_item = FabricItemGroupBuilder.create(
                 new Identifier(IndustrialChronicle.MODID, "ic_itemgroup_item"))
-                .icon(() -> new ItemStack(Blocks.WOODEN_PIPE))
+                .icon(() -> new ItemStack(Blocks.IRON_BOILER_BLOCK))
                 .build();
         ic_itemgroup_mechanical = FabricItemGroupBuilder.create(
                 new Identifier(IndustrialChronicle.MODID, "ic_itemgroup_mechanical"))
