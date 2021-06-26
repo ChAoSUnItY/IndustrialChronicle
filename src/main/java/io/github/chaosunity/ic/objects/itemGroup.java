@@ -8,16 +8,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
 public class itemGroup {
-    public static ItemGroup IC_ItemGroup_Item;
-    public static ItemGroup IC_ItemGroup_Mechanical;
+    public static ItemGroup ic_itemgroup_item;
+    public static ItemGroup ic_itemgroup_mechanical;
 
     public static void register() {
-        IC_ItemGroup_Item = FabricItemGroupBuilder.create(
-                new Identifier(IndustrialChronicle.MODID, "IC_ItemGroup_Item"))
+        ic_itemgroup_item = FabricItemGroupBuilder.create(
+                new Identifier(IndustrialChronicle.MODID, "ic_itemgroup_item"))
                 .icon(() -> new ItemStack(Items.STEAM_BUCKET))
                 .build();
-        IC_ItemGroup_Mechanical = FabricItemGroupBuilder.create(
-                new Identifier(IndustrialChronicle.MODID, "IC_ItemGroup_Mechanical"))
+        ic_itemgroup_mechanical = FabricItemGroupBuilder.create(
+                new Identifier(IndustrialChronicle.MODID, "ic_itemgroup_mechanical"))
                 .icon(() -> new ItemStack(Blocks.COPPER_BOILER_BLOCK))
                 .build();
     }
