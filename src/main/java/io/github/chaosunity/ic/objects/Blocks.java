@@ -3,7 +3,6 @@ package io.github.chaosunity.ic.objects;
 import io.github.chaosunity.ic.IndustrialChronicle;
 import io.github.chaosunity.ic.blocks.BoilerBlock;
 import io.github.chaosunity.ic.blocks.IVariantBlock;
-import io.github.chaosunity.ic.blocks.MachineBlock;
 import io.github.chaosunity.ic.blocks.MachineVariant;
 import io.github.chaosunity.ic.blocks.conduit.ConduitVariant;
 import io.github.chaosunity.ic.blocks.conduit.PipeBlock;
@@ -28,12 +27,12 @@ public class Blocks {
     public static void register() {
         STEAM = Registry.register(Registry.BLOCK, new Identifier(IndustrialChronicle.MODID, "steam"), new FluidBlock(Fluids.STEAM, FabricBlockSettings.copy(net.minecraft.block.Blocks.WATER)){});
 
-        COPPER_BOILER_BLOCK = register(new BoilerBlock(MachineVariant.COPPER), ItemGroup.DECORATIONS, "boiler");
-        IRON_BOILER_BLOCK = register(new BoilerBlock(MachineVariant.IRON), ItemGroup.DECORATIONS, "boiler");
+        COPPER_BOILER_BLOCK = register(new BoilerBlock(MachineVariant.COPPER), itemGroup.ic_itemgroup_mechanical, "boiler");
+        IRON_BOILER_BLOCK = register(new BoilerBlock(MachineVariant.IRON), itemGroup.ic_itemgroup_mechanical, "boiler");
 
-        WOODEN_PIPE = register(new PipeBlock(ConduitVariant.WOODEN), ItemGroup.DECORATIONS, "pipe");
-        COPPER_PIPE = register(new PipeBlock(ConduitVariant.COPPER), ItemGroup.DECORATIONS, "pipe");
-        IRON_PIPE = register(new PipeBlock(ConduitVariant.IRON), ItemGroup.DECORATIONS, "pipe");
+        WOODEN_PIPE = register(new PipeBlock(ConduitVariant.WOODEN), itemGroup.ic_itemgroup_mechanical, "pipe");
+        COPPER_PIPE = register(new PipeBlock(ConduitVariant.COPPER), itemGroup.ic_itemgroup_mechanical, "pipe");
+        IRON_PIPE = register(new PipeBlock(ConduitVariant.IRON), itemGroup.ic_itemgroup_mechanical, "pipe");
     }
 
     private static Block register(Block block, ItemGroup group, String id) {
