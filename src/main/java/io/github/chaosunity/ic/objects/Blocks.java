@@ -22,8 +22,8 @@ public class Blocks {
     public static void register() {
         STEAM = Registry.register(Registry.BLOCK, new Identifier(IndustrialChronicle.MODID, "steam"), new FluidBlock(Fluids.STEAM, FabricBlockSettings.copy(net.minecraft.block.Blocks.WATER)){});
 
-        COPPER_BOILER_BLOCK = register(new BoilerBlock(MachineVariant.COPPER), ItemGroup.DECORATIONS, "boiler");
-        IRON_BOILER_BLOCK = register(new BoilerBlock(MachineVariant.IRON), ItemGroup.DECORATIONS, "boiler");
+        COPPER_BOILER_BLOCK = register(new BoilerBlock(MachineVariant.COPPER), itemGroup.IC_ItemGroup_Mechanical, "boiler");
+        IRON_BOILER_BLOCK = register(new BoilerBlock(MachineVariant.IRON), itemGroup.IC_ItemGroup_Mechanical, "boiler");
     }
 
     private static Block register(Block block, ItemGroup group, String id) {
