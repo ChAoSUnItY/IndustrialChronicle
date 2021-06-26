@@ -1,21 +1,13 @@
-package io.github.chaosunity.ic.blocks.entity;
+package io.github.chaosunity.ic.blockentity;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
-import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.DefaultedList;
 
-public interface BoilerSimpleInventory extends Inventory {
+public interface MachineInventory extends SidedInventory {
     DefaultedList<ItemStack> getItems();
-
-    static BoilerSimpleInventory of(DefaultedList<ItemStack> items) {
-        return () -> items;
-    }
-
-    static BoilerSimpleInventory of(int size) {
-        return of(DefaultedList.ofSize(size, ItemStack.EMPTY));
-    }
 
     @Override
     default int size() {

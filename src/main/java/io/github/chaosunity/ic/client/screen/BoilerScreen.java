@@ -19,16 +19,16 @@ public class BoilerScreen extends HandledScreen<BoilerScreenHandler> {
     @Override
     protected void init() {
         super.init();
+        background = new Identifier(IndustrialChronicle.MODID, switch (handler.getVariant()) {
+            case COPPER -> "textures/gui/copper_boiler_gui.png";
+            case IRON -> "textures/gui/iron_boiler_gui.png";
+        });
         titleX = (backgroundWidth - textRenderer.getWidth(title)) / 2;
         playerInventoryTitleX = backgroundWidth - textRenderer.getWidth(playerInventoryTitle) - 2;
     }
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        background = new Identifier(IndustrialChronicle.MODID, switch (handler.getVariant()) {
-            case COPPER -> "textures/gui/copper_boiler_gui.png";
-            case IRON -> "textures/gui/iron_boiler_gui.png";
-        });
         this.renderBackground(matrices);
         super.render(matrices, mouseX, mouseY, delta);
         this.drawMouseoverTooltip(matrices, mouseX, mouseY);
@@ -61,7 +61,7 @@ public class BoilerScreen extends HandledScreen<BoilerScreenHandler> {
         int tankTopY = y + 6;
         int emptyTankHeight = (int) (74 * (1.0 - handler.getWaterPercentage()));
         drawTexture(matrices, x + 5, tankTopY + emptyTankHeight, 0, 0, 22, 74 - emptyTankHeight, 16, 16);
-        var steamTexture = new Identifier(IndustrialChronicle.MODID, "textures/fluid/steam.png");
+        var steamTexture = new Identifier(IndustrialChronicle.MODID, "textures/block/steam_still.png");
         RenderSystem.setShaderTexture(0, steamTexture);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         emptyTankHeight = (int) (74 * (1.0 - handler.getSteamPercentage()));

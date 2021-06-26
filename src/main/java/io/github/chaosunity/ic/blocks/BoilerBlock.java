@@ -1,12 +1,12 @@
 package io.github.chaosunity.ic.blocks;
 
-import io.github.chaosunity.ic.blocks.entity.BoilerBlockEntity;
-import io.github.chaosunity.ic.objects.Blocks;
+import io.github.chaosunity.ic.blockentity.BoilerBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
@@ -31,7 +31,7 @@ public class BoilerBlock extends MachineBlock implements BlockEntityProvider {
     public static final BooleanProperty LIT = Properties.LIT;
 
     public BoilerBlock(MachineVariant type) {
-        super(FabricBlockSettings.of(Blocks.METAL)
+        super(FabricBlockSettings.of(Material.METAL)
                 .strength(3.0F)
                 .requiresTool()
                 .breakByTool(FabricToolTags.PICKAXES, type == MachineVariant.COPPER ? 1 : 2)
@@ -48,14 +48,16 @@ public class BoilerBlock extends MachineBlock implements BlockEntityProvider {
             if (be instanceof BoilerBlockEntity bbe) {
                 var stack = player.getStackInHand(hand);
 
-                if (stack.isOf(Items.WATER_BUCKET)) {
+                if (stack.isOf(Items.WATER_BUCKET) && bbe.getWater().canAddFullBucket()) {
                     player.setStackInHand(hand, ItemUsage.exchangeStack(stack, player, new ItemStack(Items.BUCKET)));
 
-                    bbe.addWater(1000);
-                } else if (stack.isOf(Items.BUCKET) && bbe.canFullFillBucket()) {
+                    bbe.getWater().add(1000);
+                    bbe.sync();
+                } else if (stack.isOf(Items.BUCKET) && bbe.getWater().canFullFillBucket()) {
                     player.setStackInHand(hand, ItemUsage.exchangeStack(stack, player, new ItemStack(Items.WATER_BUCKET)));
 
-                    bbe.removeWater(1000);
+                    bbe.getWater().remove(1000);
+                    bbe.sync();
                 } else {
                     player.openHandledScreen(bbe);
                 }

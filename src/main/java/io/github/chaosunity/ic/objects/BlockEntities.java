@@ -1,6 +1,6 @@
 package io.github.chaosunity.ic.objects;
 
-import io.github.chaosunity.ic.blocks.entity.BoilerBlockEntity;
+import io.github.chaosunity.ic.blockentity.BoilerBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
