@@ -6,7 +6,6 @@ import io.github.chaosunity.ic.blocks.BoilerBlock;
 import io.github.chaosunity.ic.blocks.MachineVariant;
 import io.github.chaosunity.ic.client.screen.BoilerScreenHandler;
 import io.github.chaosunity.ic.objects.BlockEntities;
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
@@ -29,10 +28,14 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class BoilerBlockEntity extends MachineBlockEntity implements ExtendedScreenHandlerFactory, BlockEntityClientSerializable {
+public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, BoilerBlock>
+        implements ExtendedScreenHandlerFactory, ImplementedInventory, ImplementedFluidContainer {
     public static final int MAX_WATER_CAPACITY = 10000;
     public static final int MAX_STEAM_CAPACITY = 10000;
-    public static final int[] TRANSFORM_RATE_SET = new int[]{20, 40};
+    public static final int[] TRANSFORM_RATE = new int[]{
+            20,
+            40
+    };
 
     public final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(1, ItemStack.EMPTY);
     public final DefaultedList<FluidStack> fluids = DefaultedList.copyOf(
@@ -44,8 +47,8 @@ public class BoilerBlockEntity extends MachineBlockEntity implements ExtendedScr
     private int burnTime;
     private int fuelTime;
 
-    public BoilerBlockEntity(BlockPos pos, BlockState state) {
-        super(switch (((BoilerBlock) state.getBlock()).type) {
+    public BoilerBlockEntity(BlockPos pos, BlockState state, MachineVariant variant) {
+        super(switch (variant) {
             case COPPER -> BlockEntities.COPPER_BOILER_BLOCK_ENTITY;
             case IRON -> BlockEntities.IRON_BOILER_BLOCK_ENTITY;
         }, pos, state);
@@ -74,10 +77,12 @@ public class BoilerBlockEntity extends MachineBlockEntity implements ExtendedScr
     }
 
     public int getTransformRate() {
-        return TRANSFORM_RATE_SET[getVariant().ordinal()];
+        return TRANSFORM_RATE[getVariant().ordinal()];
     }
 
     public static void tick(World world, BlockPos pos, BlockState state, BlockEntity be) {
+        if (world.isClient) return;
+
         if (be instanceof BoilerBlockEntity bbe) {
             var bl = bbe.isBurning();
             var changed = false;
@@ -120,7 +125,7 @@ public class BoilerBlockEntity extends MachineBlockEntity implements ExtendedScr
     }
 
     public MachineVariant getVariant() {
-        return ((BoilerBlock) getCachedState().getBlock()).type;
+        return getVariant(this);
     }
 
     protected int getFuelTime(ItemStack fuel) {
@@ -173,8 +178,18 @@ public class BoilerBlockEntity extends MachineBlockEntity implements ExtendedScr
     }
 
     @Override
+    public boolean canInsertFluid(int index, Direction direction) {
+        return false;
+    }
+
+    @Override
     public boolean canExtract(int slot, ItemStack stack, Direction direction) {
         return true;
+    }
+
+    @Override
+    public boolean canExtractFluid(int index, Direction direction) {
+        return false;
     }
 
     @Override
@@ -196,15 +211,5 @@ public class BoilerBlockEntity extends MachineBlockEntity implements ExtendedScr
     @Override
     public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
         return new BoilerScreenHandler(syncId, inv, this);
-    }
-
-    @Override
-    public void fromClientTag(NbtCompound tag) {
-        readNbt(tag);
-    }
-
-    @Override
-    public NbtCompound toClientTag(NbtCompound tag) {
-        return writeNbt(tag);
     }
 }
