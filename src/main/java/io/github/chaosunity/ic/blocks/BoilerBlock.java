@@ -49,7 +49,9 @@ public class BoilerBlock extends MachineBlock implements BlockEntityProvider {
                 var stack = player.getStackInHand(hand);
 
                 if (stack.isOf(Items.WATER_BUCKET) && bbe.getWater().canAddFullBucket()) {
-                    player.setStackInHand(hand, ItemUsage.exchangeStack(stack, player, new ItemStack(Items.BUCKET)));
+                    if(!player.isCreative()){
+                        player.setStackInHand(hand, ItemUsage.exchangeStack(stack, player, new ItemStack(Items.BUCKET)));
+                    }
 
                     bbe.getWater().add(1000);
                     bbe.sync();
