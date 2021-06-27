@@ -1,0 +1,6 @@
+{
+  "parent": "industrial_chronicle:block/template/thick_conduit_core",
+  "textures": {
+    "conduit": "industrial_chronicle:block/conduit/wooden_pipe"
+  }
+}

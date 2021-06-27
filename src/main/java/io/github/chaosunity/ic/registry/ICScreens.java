@@ -1,4 +1,4 @@
-package io.github.chaosunity.ic.objects;
+package io.github.chaosunity.ic.registry;
 
 import io.github.chaosunity.ic.IndustrialChronicle;
 import io.github.chaosunity.ic.client.screen.BoilerScreen;
@@ -8,7 +8,7 @@ import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
 
-public class Screens {
+public final class ICScreens {
     public static final ScreenHandlerType<BoilerScreenHandler> BOILER_SCREEN_HANDLER;
 
     static {

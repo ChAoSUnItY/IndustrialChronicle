@@ -1,8 +1,9 @@
 package io.github.chaosunity.ic.client;
 
 import io.github.chaosunity.ic.IndustrialChronicle;
-import io.github.chaosunity.ic.objects.Fluids;
-import io.github.chaosunity.ic.objects.Screens;
+import io.github.chaosunity.ic.registry.ICBlockEntityRenderers;
+import io.github.chaosunity.ic.registry.ICFluids;
+import io.github.chaosunity.ic.registry.ICScreens;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -31,10 +32,11 @@ import java.util.function.Function;
 public class IndustrialChronicleClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        Screens.register();
+        ICScreens.register();
+        ICBlockEntityRenderers.register();
 
-        setupFluidRendering(Fluids.STEAM, Fluids.FLOWING_STEAM, new Identifier(IndustrialChronicle.MODID, "steam"), 0xFFFFFF);
-        BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), Fluids.STEAM, Fluids.FLOWING_STEAM);
+        setupFluidRendering(ICFluids.STEAM, ICFluids.FLOWING_STEAM, new Identifier(IndustrialChronicle.MODID, "steam"), 0xFFFFFF);
+        BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), ICFluids.STEAM, ICFluids.FLOWING_STEAM);
     }
 
     public static void setupFluidRendering(final Fluid still, final Fluid flowing, final Identifier textureFluidId, final int color) {

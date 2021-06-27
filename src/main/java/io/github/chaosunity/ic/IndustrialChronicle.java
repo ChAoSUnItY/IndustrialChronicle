@@ -1,6 +1,6 @@
 package io.github.chaosunity.ic;
 
-import io.github.chaosunity.ic.objects.*;
+import io.github.chaosunity.ic.registry.*;
 import net.fabricmc.api.ModInitializer;
 
 public class IndustrialChronicle implements ModInitializer {
@@ -8,10 +8,10 @@ public class IndustrialChronicle implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        Fluids.register();
-        Items.register();
-        Blocks.register();
-        BlockEntities.register();
-        itemGroup.register();
+        ICFluids.register();
+        ICItems.register();
+        ICBlocks.register();
+        ICBlockEntities.register();
+        ICItemGroup.register();
     }
 }

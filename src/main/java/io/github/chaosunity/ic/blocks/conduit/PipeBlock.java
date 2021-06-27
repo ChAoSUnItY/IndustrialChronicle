@@ -1,5 +1,6 @@
 package io.github.chaosunity.ic.blocks.conduit;
 
+import io.github.chaosunity.ic.api.fluid.SidedFluidContainer;
 import io.github.chaosunity.ic.blockentity.conduit.PipeBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
@@ -23,7 +24,7 @@ public class PipeBlock extends AbstractConduitBlock {
 
     @Override
     public boolean canConnectTo(WorldAccess world, BlockPos pos) {
-        return false;
+        return world.getBlockEntity(pos) instanceof SidedFluidContainer;
     }
 
     @Nullable
@@ -35,6 +36,6 @@ public class PipeBlock extends AbstractConduitBlock {
     @Nullable
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new PipeBlockEntity(pos, state, variant);
+        return new PipeBlockEntity(pos, state);
     }
 }

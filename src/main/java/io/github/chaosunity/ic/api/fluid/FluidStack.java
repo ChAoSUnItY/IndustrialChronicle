@@ -40,12 +40,39 @@ public class FluidStack {
         return fluid;
     }
 
-    public boolean changeStoredFluid(Fluid fluid) {
-        if (mB != 0)
-            return false;
-
+    public boolean setFluid(Fluid fluid) {
         this.fluid = fluid;
         return true;
+    }
+
+    /**
+     * Transfer the given FluidStack into the target FluidStack.
+     * Never succeed when two fluids are different.
+     *
+     * @param stackIn
+     * @param mB
+     * @return actual transformed milli buckets
+     */
+    public long transfer(FluidStack stackIn, long mB, boolean fineWithEmptyFluid) {
+        if (fineWithEmptyFluid && fluid.matchesType(Fluids.EMPTY)) return transform(stackIn, mB);
+
+        if (!fluid.matchesType(stackIn.fluid)) return 0;
+
+        return transform(stackIn, mB);
+    }
+
+    /**
+     * Transfer the given FluidStack into the target FluidStack.
+     * Never succeed when two fluids are different.
+     *
+     * @param stackIn
+     * @param mB
+     * @return actual transformed milli buckets
+     */
+    public long transfer(FluidStack stackIn, long mB) {
+        if (!fluid.matchesType(stackIn.fluid)) return 0;
+
+        return transform(stackIn, mB);
     }
 
     /**

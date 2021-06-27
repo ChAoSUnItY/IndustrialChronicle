@@ -102,6 +102,6 @@ public class BoilerBlock extends MachineBlock implements BlockEntityProvider {
     @Nullable
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new BoilerBlockEntity(pos, state, variant);
+        return new BoilerBlockEntity(pos, state);
     }
 }

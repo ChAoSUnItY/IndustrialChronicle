@@ -23,7 +23,6 @@ public abstract class AbstractConduitBlock extends BlockWithEntity implements Wa
     public static final BooleanProperty UP = BooleanProperty.of("up");
     public static final BooleanProperty DOWN = BooleanProperty.of("down");
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
-    public static final BooleanProperty COVERED = BooleanProperty.of("covered");
 
     public final ConduitVariant variant;
 
@@ -74,7 +73,7 @@ public abstract class AbstractConduitBlock extends BlockWithEntity implements Wa
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder.add(EAST, WEST, NORTH, SOUTH, UP, DOWN, WATERLOGGED, COVERED));
+        super.appendProperties(builder.add(EAST, WEST, NORTH, SOUTH, UP, DOWN, WATERLOGGED));
     }
 
     @Override
@@ -96,12 +95,12 @@ public abstract class AbstractConduitBlock extends BlockWithEntity implements Wa
 
     @Override
     public boolean tryFillWithFluid(WorldAccess world, BlockPos pos, BlockState state, FluidState fluidState) {
-        return !state.get(COVERED) && Waterloggable.super.tryFillWithFluid(world, pos, state, fluidState);
+        return Waterloggable.super.tryFillWithFluid(world, pos, state, fluidState);
     }
 
     @Override
     public boolean canFillWithFluid(BlockView view, BlockPos pos, BlockState state, Fluid fluid) {
-        return !state.get(COVERED) && Waterloggable.super.canFillWithFluid(view, pos, state, fluid);
+        return  Waterloggable.super.canFillWithFluid(view, pos, state, fluid);
     }
 
     @SuppressWarnings("deprecation")

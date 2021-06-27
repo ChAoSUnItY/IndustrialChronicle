@@ -1,4 +1,4 @@
-package io.github.chaosunity.ic.objects;
+package io.github.chaosunity.ic.registry;
 
 import io.github.chaosunity.ic.IndustrialChronicle;
 import io.github.chaosunity.ic.fluids.SteamFluid;
@@ -6,7 +6,7 @@ import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public class Fluids {
+public final class ICFluids {
     public static FlowableFluid FLOWING_STEAM;
     public static FlowableFluid STEAM;
 

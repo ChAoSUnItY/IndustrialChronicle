@@ -1,0 +1,21 @@
+{
+  "textures": {
+    "particle": "#conduit"
+  },
+  "elements": [
+    {
+      "__comment": "central part, reference to tech reborn's template_thick_cable_core.",
+      "from": [5, 5, 5],
+      "to": [11, 11, 11],
+      "shade": true,
+      "faces": {
+        "north": {"uv": [0, 0, 6, 6], "texture": "#conduit"},
+        "east": {"uv": [0, 0, 6, 6], "texture": "#conduit"},
+        "south": {"uv": [0, 0, 6, 6], "texture": "#conduit"},
+        "west": {"uv": [0, 0, 6, 6], "texture": "#conduit"},
+        "up": {"uv": [0, 0, 6, 6], "texture": "#conduit"},
+        "down": {"uv": [0, 0, 6, 6], "texture": "#conduit"}
+      }
+    }
+  ]
+}

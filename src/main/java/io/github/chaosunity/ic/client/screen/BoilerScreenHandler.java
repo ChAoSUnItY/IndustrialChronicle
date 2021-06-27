@@ -3,7 +3,7 @@ package io.github.chaosunity.ic.client.screen;
 import io.github.chaosunity.ic.blocks.MachineVariant;
 import io.github.chaosunity.ic.blockentity.BoilerBlockEntity;
 import io.github.chaosunity.ic.client.screen.slot.FuelSlot;
-import io.github.chaosunity.ic.objects.Screens;
+import io.github.chaosunity.ic.registry.ICScreens;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -23,7 +23,7 @@ public class BoilerScreenHandler extends ScreenHandler {
     }
 
     public BoilerScreenHandler(int syncId, PlayerInventory playerInventory, Inventory boilerInventory) {
-        super(Screens.BOILER_SCREEN_HANDLER, syncId);
+        super(ICScreens.BOILER_SCREEN_HANDLER, syncId);
         bbe = null;
         inventory = boilerInventory;
 
@@ -50,7 +50,7 @@ public class BoilerScreenHandler extends ScreenHandler {
     }
 
     public double getWaterPercentage() {
-        return getWaterCapacity() * 1.0 / BoilerBlockEntity.MAX_WATER_CAPACITY;
+        return getWaterCapacity() * 1.0 / BoilerBlockEntity.WATER_CAPACITY;
     }
 
     public long getSteamCapacity() {
@@ -58,7 +58,7 @@ public class BoilerScreenHandler extends ScreenHandler {
     }
 
     public double getSteamPercentage() {
-        return getSteamCapacity() * 1.0 / BoilerBlockEntity.MAX_STEAM_CAPACITY;
+        return getSteamCapacity() * 1.0 / BoilerBlockEntity.STEAM_CAPACITY;
     }
 
     public int getBurningTime() {

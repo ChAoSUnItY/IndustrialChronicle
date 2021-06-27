@@ -1,6 +1,5 @@
 package io.github.chaosunity.ic.api.fluid;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.collection.DefaultedList;
 
 public interface FluidContainer {

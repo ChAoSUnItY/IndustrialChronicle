@@ -1,4 +1,4 @@
-package io.github.chaosunity.ic.objects;
+package io.github.chaosunity.ic.registry;
 
 import io.github.chaosunity.ic.IndustrialChronicle;
 import io.github.chaosunity.ic.blocks.BoilerBlock;
@@ -14,7 +14,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public class Blocks {
+public final class ICBlocks {
     public static Block STEAM;
 
     public static Block COPPER_BOILER_BLOCK;
@@ -25,18 +25,18 @@ public class Blocks {
     public static Block IRON_PIPE;
 
     public static void register() {
-        STEAM = Registry.register(Registry.BLOCK, new Identifier(IndustrialChronicle.MODID, "steam"), new FluidBlock(Fluids.STEAM, FabricBlockSettings.copy(net.minecraft.block.Blocks.WATER)){});
+        STEAM = Registry.register(Registry.BLOCK, new Identifier(IndustrialChronicle.MODID, "steam"), new FluidBlock(ICFluids.STEAM, FabricBlockSettings.copy(net.minecraft.block.Blocks.WATER)){});
 
-        COPPER_BOILER_BLOCK = register(new BoilerBlock(MachineVariant.COPPER), itemGroup.ic_itemgroup_mechanical, "boiler");
-        IRON_BOILER_BLOCK = register(new BoilerBlock(MachineVariant.IRON), itemGroup.ic_itemgroup_mechanical, "boiler");
+        COPPER_BOILER_BLOCK = register(new BoilerBlock(MachineVariant.COPPER), ICItemGroup.IC_ITEMGROUP_MECHANICAL, "boiler");
+        IRON_BOILER_BLOCK = register(new BoilerBlock(MachineVariant.IRON), ICItemGroup.IC_ITEMGROUP_MECHANICAL, "boiler");
 
-        WOODEN_PIPE = register(new PipeBlock(ConduitVariant.WOODEN), itemGroup.ic_itemgroup_mechanical, "pipe");
-        COPPER_PIPE = register(new PipeBlock(ConduitVariant.COPPER), itemGroup.ic_itemgroup_mechanical, "pipe");
-        IRON_PIPE = register(new PipeBlock(ConduitVariant.IRON), itemGroup.ic_itemgroup_mechanical, "pipe");
+        WOODEN_PIPE = register(new PipeBlock(ConduitVariant.WOODEN), ICItemGroup.IC_ITEMGROUP_MECHANICAL, "pipe");
+        COPPER_PIPE = register(new PipeBlock(ConduitVariant.COPPER), ICItemGroup.IC_ITEMGROUP_MECHANICAL, "pipe");
+        IRON_PIPE = register(new PipeBlock(ConduitVariant.IRON), ICItemGroup.IC_ITEMGROUP_MECHANICAL, "pipe");
     }
 
     private static Block register(Block block, ItemGroup group, String id) {
-        var identifier = new Identifier(IndustrialChronicle.MODID, block instanceof IVariantBlock<?> mb ? mb.getVariant().asString() + "_" + id : id);
+        var identifier = new Identifier(IndustrialChronicle.MODID, block instanceof IVariantBlock<?> vb ? vb.getVariant().asString() + "_" + id : id);
 
         Registry.register(Registry.BLOCK, identifier, block);
         Registry.register(Registry.ITEM, identifier, new BlockItem(block, new FabricItemSettings().group(group)));

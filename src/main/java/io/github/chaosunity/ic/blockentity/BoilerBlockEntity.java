@@ -2,10 +2,12 @@ package io.github.chaosunity.ic.blockentity;
 
 import io.github.chaosunity.ic.api.fluid.FluidHelper;
 import io.github.chaosunity.ic.api.fluid.FluidStack;
+import io.github.chaosunity.ic.api.fluid.SidedFluidContainer;
 import io.github.chaosunity.ic.blocks.BoilerBlock;
 import io.github.chaosunity.ic.blocks.MachineVariant;
 import io.github.chaosunity.ic.client.screen.BoilerScreenHandler;
-import io.github.chaosunity.ic.objects.BlockEntities;
+import io.github.chaosunity.ic.registry.ICBlockEntities;
+import io.github.chaosunity.ic.registry.ICFluids;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
@@ -28,29 +30,35 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
+
 public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, BoilerBlock>
         implements ExtendedScreenHandlerFactory, ImplementedInventory, ImplementedFluidContainer {
-    public static final int MAX_WATER_CAPACITY = 10000;
-    public static final int MAX_STEAM_CAPACITY = 10000;
+    public static final int WATER_CAPACITY = 10000;
+    public static final int STEAM_CAPACITY = 10000;
     public static final int[] TRANSFORM_RATE = new int[]{
             20,
             40
+    };
+    public static final int[] TRANSFER_RATE = new int[]{
+            40,
+            80
     };
 
     public final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(1, ItemStack.EMPTY);
     public final DefaultedList<FluidStack> fluids = DefaultedList.copyOf(
             FluidStack.EMPTY,
-            new FluidStack(Fluids.WATER, MAX_WATER_CAPACITY),
-            new FluidStack(io.github.chaosunity.ic.objects.Fluids.STEAM, MAX_STEAM_CAPACITY)
+            new FluidStack(Fluids.WATER, WATER_CAPACITY),
+            new FluidStack(ICFluids.STEAM, STEAM_CAPACITY)
     );
 
     private int burnTime;
     private int fuelTime;
 
-    public BoilerBlockEntity(BlockPos pos, BlockState state, MachineVariant variant) {
-        super(switch (variant) {
-            case COPPER -> BlockEntities.COPPER_BOILER_BLOCK_ENTITY;
-            case IRON -> BlockEntities.IRON_BOILER_BLOCK_ENTITY;
+    public BoilerBlockEntity(BlockPos pos, BlockState state) {
+        super(switch (IVariantBlockEntity.<MachineVariant>getVariant(state)) {
+            case COPPER -> ICBlockEntities.COPPER_BOILER_BLOCK_ENTITY;
+            case IRON -> ICBlockEntities.IRON_BOILER_BLOCK_ENTITY;
         }, pos, state);
     }
 
@@ -72,6 +80,16 @@ public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, Boi
         return super.writeNbt(nbt);
     }
 
+    @Override
+    public NbtCompound toClientTag(NbtCompound tag) {
+        return writeNbt(tag);
+    }
+
+    @Override
+    public void fromClientTag(NbtCompound tag) {
+        readNbt(tag);
+    }
+
     public boolean isBurning() {
         return burnTime > 0;
     }
@@ -80,9 +98,11 @@ public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, Boi
         return TRANSFORM_RATE[getVariant().ordinal()];
     }
 
-    public static void tick(World world, BlockPos pos, BlockState state, BlockEntity be) {
-        if (world.isClient) return;
+    public int getTransferRate() {
+        return TRANSFER_RATE[getVariant().ordinal()];
+    }
 
+    public static void tick(World world, BlockPos pos, BlockState state, BlockEntity be) {
         if (be instanceof BoilerBlockEntity bbe) {
             var bl = bbe.isBurning();
             var changed = false;
@@ -116,6 +136,25 @@ public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, Boi
                 changed = true;
                 state = state.with(BoilerBlock.LIT, bbe.isBurning());
                 world.setBlockState(pos, state, 3);
+            }
+
+            if (!bbe.getSteam().isEmpty()) {
+                var insertableContainers = SidedFluidContainer.getInsertableAlias(world, pos, bbe.getSteam());
+
+                if (!insertableContainers.isEmpty()) {
+                    changed = true;
+
+                    Collections.shuffle(insertableContainers);
+                    insertableContainers.forEach(triple -> {
+                        var be2 = triple.getLeft();
+                        var indexes = triple.getRight();
+
+                        for (var index : indexes)
+                            be2.get(index).transfer(bbe.getSteam(), bbe.getTransferRate(), true);
+
+                        be2.update(bbe.getSteam());
+                    });
+                }
             }
 
             if (changed) {
@@ -178,18 +217,23 @@ public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, Boi
     }
 
     @Override
-    public boolean canInsertFluid(int index, Direction direction) {
-        return false;
-    }
-
-    @Override
     public boolean canExtract(int slot, ItemStack stack, Direction direction) {
         return true;
     }
 
     @Override
-    public boolean canExtractFluid(int index, Direction direction) {
-        return false;
+    public void update(FluidStack stack) {
+
+    }
+
+    @Override
+    public boolean canInsertFluid(int index, FluidStack stack, Direction direction) {
+        return index == 0 && stack.getFluid().matchesType(Fluids.WATER);
+    }
+
+    @Override
+    public boolean canExtractFluid(int index, FluidStack stack, Direction direction) {
+        return index == 1 && stack.getFluid().matchesType(ICFluids.STEAM);
     }
 
     @Override
