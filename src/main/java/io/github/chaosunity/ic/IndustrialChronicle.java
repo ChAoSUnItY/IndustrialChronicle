@@ -12,6 +12,5 @@ public class IndustrialChronicle implements ModInitializer {
         ICItems.register();
         ICBlocks.register();
         ICBlockEntities.register();
-        ICItemGroup.register();
     }
 }

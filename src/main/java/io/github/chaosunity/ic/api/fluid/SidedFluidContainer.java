@@ -37,8 +37,6 @@ public interface SidedFluidContainer extends FluidContainer {
         return insertableContainers;
     }
 
-
-
     void update(FluidStack stack);
 
     boolean canExtractFluid(int index, FluidStack stack, Direction direction);

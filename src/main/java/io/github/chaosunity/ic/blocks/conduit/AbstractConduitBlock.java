@@ -9,11 +9,18 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class AbstractConduitBlock extends BlockWithEntity implements Waterloggable, IVariantBlock<ConduitVariant> {
     public static final BooleanProperty EAST = BooleanProperty.of("east");
@@ -24,6 +31,33 @@ public abstract class AbstractConduitBlock extends BlockWithEntity implements Wa
     public static final BooleanProperty DOWN = BooleanProperty.of("down");
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
 
+    public static final Map<Direction, BooleanProperty> PROPERTY_MAP = Util.make(new HashMap<>(), map -> {
+        map.put(Direction.EAST, EAST);
+        map.put(Direction.WEST, WEST);
+        map.put(Direction.NORTH, NORTH);
+        map.put(Direction.SOUTH, SOUTH);
+        map.put(Direction.UP, UP);
+        map.put(Direction.DOWN, DOWN);
+    });
+
+    private final Map<BlockState, VoxelShape> SHAPES = Util.make(new HashMap<>(), map -> stateManager.getStates().forEach(state -> {
+        var size = 10.0;
+        var baseShape = Block.createCuboidShape(16.0D - size, 16.0D - size, 16.0D - size, size, size, size);
+        var connections = new ArrayList<VoxelShape>();
+
+        for (Direction dir : Direction.values()) {
+            if (state.get(AbstractConduitBlock.PROPERTY_MAP.get(dir))) {
+                var x = dir == Direction.WEST ? 0 : dir == Direction.EAST ? 16D : size;
+                var z = dir == Direction.NORTH ? 0 : dir == Direction.SOUTH ? 16D : size;
+                var y = dir == Direction.DOWN ? 0 : dir == Direction.UP ? 16D : size;
+
+                var shape = VoxelShapes.cuboidUnchecked((16.0D - size) / 16.0, (16.0D - size) / 16.0, (16.0D - size) / 16.0, x / 16.0, y / 16.0, z / 16.0);
+                connections.add(shape);
+            }
+        }
+
+        map.put(state, VoxelShapes.union(baseShape, connections.toArray(VoxelShape[]::new)));
+    }));
     public final ConduitVariant variant;
 
     protected AbstractConduitBlock(ConduitVariant variant, Settings settings) {
@@ -82,6 +116,16 @@ public abstract class AbstractConduitBlock extends BlockWithEntity implements Wa
                 .with(WATERLOGGED, context.getWorld().getFluidState(context.getBlockPos()).getFluid() == Fluids.WATER);
     }
 
+    @Override
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return SHAPES.get(state);
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return SHAPES.get(state);
+    }
+
     @SuppressWarnings("deprecation")
     @Override
     public BlockState getStateForNeighborUpdate(BlockState ourState, Direction ourFacing, BlockState otherState,
@@ -100,7 +144,7 @@ public abstract class AbstractConduitBlock extends BlockWithEntity implements Wa
 
     @Override
     public boolean canFillWithFluid(BlockView view, BlockPos pos, BlockState state, Fluid fluid) {
-        return  Waterloggable.super.canFillWithFluid(view, pos, state, fluid);
+        return Waterloggable.super.canFillWithFluid(view, pos, state, fluid);
     }
 
     @SuppressWarnings("deprecation")
