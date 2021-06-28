@@ -5,7 +5,6 @@ import io.github.chaosunity.ic.registry.ICItems;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.*;
-import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
@@ -29,17 +28,18 @@ import java.util.Random;
 public class BoilerBlock extends MachineBlock implements BlockEntityProvider {
     public static final BooleanProperty LIT = Properties.LIT;
 
-    public BoilerBlock(MachineVariant type) {
+    public BoilerBlock(MachineVariant variant) {
         super(FabricBlockSettings.of(Material.METAL)
                 .strength(3.0F)
                 .requiresTool()
-                .breakByTool(FabricToolTags.PICKAXES, type == MachineVariant.COPPER ? 1 : 2)
-                .luminance(s -> s.get(LIT) ? 13 : 0), type);
+                .breakByTool(FabricToolTags.PICKAXES, variant == MachineVariant.COPPER ? 1 : 2)
+                .luminance(s -> s.get(LIT) ? 13 : 0), variant);
 
         setDefaultState(getStateManager().getDefaultState().with(LIT, false));
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (!world.isClient) {
             var be = world.getBlockEntity(pos);

@@ -34,11 +34,7 @@ public class PipeBlockEntity extends ConduitBlockEntity<PipeBlockEntity, PipeBlo
     public final DefaultedList<FluidStack> fluids = DefaultedList.ofSize(1, new FluidStack(Fluids.EMPTY, getHoldingCapacity()));
 
     public PipeBlockEntity(BlockPos pos, BlockState state) {
-        super(switch (IVariantBlockEntity.<ConduitVariant>getVariant(state)) {
-            case WOODEN -> ICBlockEntities.WOODEN_PIPE_BLOCK_ENTITY;
-            case COPPER -> ICBlockEntities.COPPER_PIPE_BLOCK_ENTITY;
-            case IRON -> ICBlockEntities.IRON_PIPE_BLOCK_ENTITY;
-        }, pos, state);
+        super(ICBlockEntities.PIPE_BLOCK_ENTITIES.get(IVariantBlockEntity.<ConduitVariant>getVariant(state)), pos, state);
     }
 
     @Override

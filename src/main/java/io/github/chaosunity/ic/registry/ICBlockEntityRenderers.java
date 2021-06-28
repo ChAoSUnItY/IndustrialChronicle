@@ -7,14 +7,19 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 
+import java.util.EnumMap;
+
 public final class ICBlockEntityRenderers {
     public static void register() {
-        register(ICBlockEntities.WOODEN_PIPE_BLOCK_ENTITY, PipeBlockEntityRenderer::new);
-        register(ICBlockEntities.COPPER_BOILER_BLOCK_ENTITY, IOBlockEntityRenderer::new);
-        register(ICBlockEntities.IRON_BOILER_BLOCK_ENTITY, IOBlockEntityRenderer::new);
+        register(ICBlockEntities.PIPE_BLOCK_ENTITIES, PipeBlockEntityRenderer::new);
+        register(ICBlockEntities.BOILER_BLOCK_ENTITIES, IOBlockEntityRenderer::new);
     }
 
     private static <BE extends BlockEntity> void register(BlockEntityType<BE> be, BlockEntityRendererFactory<? super BE> factory) {
         BlockEntityRendererRegistry.INSTANCE.register(be, factory);
+    }
+
+    private static <V extends Enum<V>, BE extends BlockEntity> void register(EnumMap<V, BlockEntityType<BE>> bes, BlockEntityRendererFactory<? super BE> factory) {
+        bes.forEach((e, be) -> BlockEntityRendererRegistry.INSTANCE.register(be, factory));
     }
 }

@@ -62,10 +62,7 @@ public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, Boi
     private int fuelTime;
 
     public BoilerBlockEntity(BlockPos pos, BlockState state) {
-        super(switch (IVariantBlockEntity.<MachineVariant>getVariant(state)) {
-            case COPPER -> ICBlockEntities.COPPER_BOILER_BLOCK_ENTITY;
-            case IRON -> ICBlockEntities.IRON_BOILER_BLOCK_ENTITY;
-        }, pos, state);
+        super(ICBlockEntities.BOILER_BLOCK_ENTITIES.get(IVariantBlockEntity.<MachineVariant>getVariant(state)), pos, state);
     }
 
     @Override

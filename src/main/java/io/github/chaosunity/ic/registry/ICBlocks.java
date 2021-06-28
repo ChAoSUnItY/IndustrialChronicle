@@ -4,6 +4,7 @@ import io.github.chaosunity.ic.IndustrialChronicle;
 import io.github.chaosunity.ic.blocks.BoilerBlock;
 import io.github.chaosunity.ic.blocks.IVariantBlock;
 import io.github.chaosunity.ic.blocks.MachineVariant;
+import io.github.chaosunity.ic.blocks.PumpBlock;
 import io.github.chaosunity.ic.blocks.conduit.ConduitVariant;
 import io.github.chaosunity.ic.blocks.conduit.PipeBlock;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -17,6 +18,9 @@ import net.minecraft.util.registry.Registry;
 public final class ICBlocks {
     public static Block STEAM;
 
+    public static Block COPPER_PUMP;
+    public static Block IRON_PUMP;
+
     public static Block COPPER_BOILER_BLOCK;
     public static Block IRON_BOILER_BLOCK;
 
@@ -26,6 +30,9 @@ public final class ICBlocks {
 
     public static void register() {
         STEAM = Registry.register(Registry.BLOCK, new Identifier(IndustrialChronicle.MODID, "steam"), new FluidBlock(ICFluids.STEAM, FabricBlockSettings.copy(net.minecraft.block.Blocks.WATER)){});
+
+        COPPER_PUMP = register(new PumpBlock(MachineVariant.COPPER), ICItemGroup.IC_ITEMGROUP_MECHANICAL, "pump");
+        IRON_PUMP = register(new PumpBlock(MachineVariant.IRON), ICItemGroup.IC_ITEMGROUP_MECHANICAL, "pump");
 
         COPPER_BOILER_BLOCK = register(new BoilerBlock(MachineVariant.COPPER), ICItemGroup.IC_ITEMGROUP_MECHANICAL, "boiler");
         IRON_BOILER_BLOCK = register(new BoilerBlock(MachineVariant.IRON), ICItemGroup.IC_ITEMGROUP_MECHANICAL, "boiler");
