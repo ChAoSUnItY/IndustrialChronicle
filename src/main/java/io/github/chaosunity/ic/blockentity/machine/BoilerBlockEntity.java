@@ -1,12 +1,16 @@
-package io.github.chaosunity.ic.blockentity;
+package io.github.chaosunity.ic.blockentity.machine;
 
 import io.github.chaosunity.ic.api.fluid.FluidHelper;
 import io.github.chaosunity.ic.api.fluid.FluidStack;
 import io.github.chaosunity.ic.api.fluid.SidedFluidContainer;
 import io.github.chaosunity.ic.api.io.BlockEntityWithIO;
-import io.github.chaosunity.ic.blocks.BoilerBlock;
+import io.github.chaosunity.ic.blockentity.IVariantBlockEntity;
+import io.github.chaosunity.ic.blockentity.ImplementedFluidContainer;
+import io.github.chaosunity.ic.blockentity.ImplementedInventory;
+import io.github.chaosunity.ic.blockentity.MachineBlockEntity;
+import io.github.chaosunity.ic.blocks.machine.BoilerBlock;
 import io.github.chaosunity.ic.blocks.IOType;
-import io.github.chaosunity.ic.blocks.MachineVariant;
+import io.github.chaosunity.ic.api.variant.MachineVariant;
 import io.github.chaosunity.ic.client.screen.BoilerScreenHandler;
 import io.github.chaosunity.ic.registry.ICBlockEntities;
 import io.github.chaosunity.ic.registry.ICFluids;
@@ -153,9 +157,9 @@ public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, Boi
                     changed = true;
 
                     Collections.shuffle(insertableContainers);
-                    insertableContainers.forEach(triple -> {
-                        var be2 = triple.getLeft();
-                        var indexes = triple.getRight();
+                    insertableContainers.forEach(pair -> {
+                        var be2 = pair.getLeft();
+                        var indexes = pair.getRight();
 
                         for (var index : indexes)
                             be2.get(index).transfer(bbe.getSteam(), bbe.getTransferRate(), true);
@@ -231,6 +235,11 @@ public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, Boi
 
     @Override
     public void update(FluidStack stack) {
+        if (world == null) return;
+
+        if (world.isClient) return;
+
+        sync();
     }
 
     @Override

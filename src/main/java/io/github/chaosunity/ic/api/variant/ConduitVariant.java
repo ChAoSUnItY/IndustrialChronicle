@@ -1,8 +1,6 @@
-package io.github.chaosunity.ic.blocks.conduit;
+package io.github.chaosunity.ic.api.variant;
 
-import net.minecraft.util.StringIdentifiable;
-
-public enum ConduitVariant implements StringIdentifiable {
+public enum ConduitVariant implements IVariant {
     WOODEN("wooden"), COPPER("copper"), IRON("iron");
 
     private final String name;

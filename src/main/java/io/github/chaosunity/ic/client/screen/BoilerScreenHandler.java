@@ -1,7 +1,7 @@
 package io.github.chaosunity.ic.client.screen;
 
-import io.github.chaosunity.ic.blocks.MachineVariant;
-import io.github.chaosunity.ic.blockentity.BoilerBlockEntity;
+import io.github.chaosunity.ic.api.variant.MachineVariant;
+import io.github.chaosunity.ic.blockentity.machine.BoilerBlockEntity;
 import io.github.chaosunity.ic.client.screen.slot.FuelSlot;
 import io.github.chaosunity.ic.registry.ICScreens;
 import net.minecraft.entity.player.PlayerEntity;

@@ -1,5 +1,6 @@
 package io.github.chaosunity.ic.registry;
 
+import io.github.chaosunity.ic.api.variant.IVariant;
 import io.github.chaosunity.ic.blockentity.renderer.IOBlockEntityRenderer;
 import io.github.chaosunity.ic.blockentity.renderer.PipeBlockEntityRenderer;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
@@ -11,15 +12,16 @@ import java.util.EnumMap;
 
 public final class ICBlockEntityRenderers {
     public static void register() {
-        register(ICBlockEntities.PIPE_BLOCK_ENTITIES, PipeBlockEntityRenderer::new);
+        register(ICBlockEntities.PUMP_BLOCK_ENTITIES, IOBlockEntityRenderer::new);
         register(ICBlockEntities.BOILER_BLOCK_ENTITIES, IOBlockEntityRenderer::new);
+        register(ICBlockEntities.PIPE_BLOCK_ENTITIES, PipeBlockEntityRenderer::new);
     }
 
     private static <BE extends BlockEntity> void register(BlockEntityType<BE> be, BlockEntityRendererFactory<? super BE> factory) {
         BlockEntityRendererRegistry.INSTANCE.register(be, factory);
     }
 
-    private static <V extends Enum<V>, BE extends BlockEntity> void register(EnumMap<V, BlockEntityType<BE>> bes, BlockEntityRendererFactory<? super BE> factory) {
+    private static <V extends Enum<V> & IVariant, BE extends BlockEntity> void register(EnumMap<V, BlockEntityType<BE>> bes, BlockEntityRendererFactory<? super BE> factory) {
         bes.forEach((e, be) -> BlockEntityRendererRegistry.INSTANCE.register(be, factory));
     }
 }

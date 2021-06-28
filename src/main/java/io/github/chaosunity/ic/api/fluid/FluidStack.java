@@ -40,9 +40,8 @@ public class FluidStack {
         return fluid;
     }
 
-    public boolean setFluid(Fluid fluid) {
+    public void setFluid(Fluid fluid) {
         this.fluid = fluid;
-        return true;
     }
 
     /**

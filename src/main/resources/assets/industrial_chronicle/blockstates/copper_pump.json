@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "industrial_chronicle:block/copper_pump",
+      "x": 90,
+      "y": 270
+    },
+    "facing=north": {
+      "model": "industrial_chronicle:block/copper_pump",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south": {
+      "model": "industrial_chronicle:block/copper_pump",
+      "x": 90
+    },
+    "facing=west": {
+      "model": "industrial_chronicle:block/copper_pump",
+      "x": 90,
+      "y": 90
+    },
+    "facing=up": {
+      "model": "industrial_chronicle:block/copper_pump",
+      "x": 180
+    },
+    "facing=down": {
+      "model": "industrial_chronicle:block/copper_pump"
+    }
+  }
+}

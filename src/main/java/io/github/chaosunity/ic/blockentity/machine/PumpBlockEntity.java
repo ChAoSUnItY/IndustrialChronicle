@@ -1,0 +1,196 @@
+package io.github.chaosunity.ic.blockentity.machine;
+
+import io.github.chaosunity.ic.api.fluid.FluidHelper;
+import io.github.chaosunity.ic.api.fluid.FluidStack;
+import io.github.chaosunity.ic.api.fluid.SidedFluidContainer;
+import io.github.chaosunity.ic.api.io.BlockEntityWithIO;
+import io.github.chaosunity.ic.api.variant.MachineVariant;
+import io.github.chaosunity.ic.blockentity.IVariantBlockEntity;
+import io.github.chaosunity.ic.blockentity.ImplementedFluidContainer;
+import io.github.chaosunity.ic.blockentity.MachineBlockEntity;
+import io.github.chaosunity.ic.blocks.IOType;
+import io.github.chaosunity.ic.blocks.machine.PumpBlock;
+import io.github.chaosunity.ic.registry.ICBlockEntities;
+import io.github.chaosunity.ic.registry.ICFluids;
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.FluidBlock;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.state.property.Properties;
+import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
+
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
+
+public class PumpBlockEntity extends MachineBlockEntity<PumpBlockEntity, PumpBlock>
+        implements ImplementedFluidContainer, BlockEntityWithIO {
+    public static final int[] PUMPING_RATE = new int[]{
+            30,
+            50
+    };
+    public static final int[] TRANSFER_RATE = new int[]{
+            20,
+            40
+    };
+    public static final int[] CONSUME_RATE = new int[]{
+            5,
+            15
+    };
+    public static final int CAPACITY = 5000;
+
+    public final DefaultedList<FluidStack> fluids = DefaultedList.copyOf(
+            FluidStack.EMPTY,
+            new FluidStack(Fluids.EMPTY, CAPACITY),
+            new FluidStack(ICFluids.STEAM, CAPACITY));
+
+    private final LinkedHashMap<Direction, IOType> IOs = createIOMap();
+    private boolean working = false;
+
+    public PumpBlockEntity(BlockPos pos, BlockState state) {
+        super(ICBlockEntities.PUMP_BLOCK_ENTITIES.get(IVariantBlockEntity.<MachineVariant>getVariant(state)), pos, state);
+    }
+
+    @Override
+    public void readNbt(NbtCompound nbt) {
+        super.readNbt(nbt);
+        FluidHelper.readNBT(nbt, fluids);
+        readIOMap(nbt, IOs);
+        working = nbt.getBoolean("Working");
+    }
+
+    @Override
+    public NbtCompound writeNbt(NbtCompound nbt) {
+        FluidHelper.writeNBT(nbt, fluids);
+        writeIOMap(nbt, IOs);
+        nbt.putBoolean("Working", working);
+        return super.writeNbt(nbt);
+    }
+
+    public FluidStack getPumpedFluid() {
+        return get(0);
+    }
+
+    public FluidStack getStoredSteam() {
+        return get(1);
+    }
+
+    public boolean isWorking() {
+        return working;
+    }
+
+    public int getPumpingRate() {
+        return PUMPING_RATE[getVariant(this).ordinal()];
+    }
+
+    public int getTransferRate() {
+        return TRANSFER_RATE[getVariant(this).ordinal()];
+    }
+
+    public int getConsumeRate() {
+        return CONSUME_RATE[getVariant(this).ordinal()];
+    }
+
+    public static void tick(World world, BlockPos pos, BlockState state, BlockEntity be) {
+        if (be instanceof PumpBlockEntity pbe) {
+            var facing = state.get(Properties.FACING);
+            var changed = false;
+
+            if (!pbe.getStoredSteam().isEmpty() && !pbe.getPumpedFluid().isFull() && world.getBlockState(pos.offset(facing)).getBlock() instanceof FluidBlock fb) {
+                changed = true;
+                pbe.getPumpedFluid().add(pbe.getPumpingRate());
+                pbe.getPumpedFluid().setFluid(fb.getFluidState(world.getBlockState(pos.offset(facing))).getFluid());
+                pbe.getStoredSteam().remove(pbe.getConsumeRate());
+
+                if (ThreadLocalRandom.current().nextInt(0, 10000) <= 1)
+                    world.setBlockState(pos.offset(facing), Blocks.AIR.getDefaultState());
+            }
+
+            if (pbe.getStoredSteam().isEmpty() || pbe.getPumpedFluid().isFull()) {
+                changed = true;
+                pbe.working = false;
+                world.setBlockState(pos, state, 3);
+            } else {
+                pbe.working = true;
+            }
+
+            if (!pbe.getPumpedFluid().isEmpty()) {
+                var insertableContainers = SidedFluidContainer.getInsertableAlias(world, pos, pbe.getPumpedFluid());
+
+                if (!insertableContainers.isEmpty()) {
+                    changed = true;
+
+                    Collections.shuffle(insertableContainers);
+                    insertableContainers.forEach(pair -> {
+                        var be2 = pair.getLeft();
+                        var indexes = pair.getRight();
+
+                        for (var index : indexes)
+                            be2.get(index).transfer(pbe.getPumpedFluid(), pbe.getTransferRate(), true);
+
+                        be2.update(pbe.getPumpedFluid());
+                    });
+                }
+            }
+
+            if (changed) {
+                markDirty(world, pos, state);
+            }
+        }
+    }
+
+    @Override
+    public DefaultedList<FluidStack> getContainers() {
+        return fluids;
+    }
+
+    @Override
+    public void update(FluidStack stack) {
+        if (world == null) return;
+
+        if (world.isClient) return;
+
+        var changed = false;
+
+        if (getPumpedFluid().getFluid().matchesType(Fluids.EMPTY) && getPumpedFluid().mB != 0) {
+            changed = true;
+            getPumpedFluid().setFluid(stack.getFluid());
+        }
+
+        if (changed) {
+            markDirty(world, pos, getCachedState());
+            sync();
+        }
+    }
+
+    @Override
+    public boolean canExtractFluid(int index, FluidStack stack, Direction direction) {
+        return index == 0 && IOs.get(direction) == IOType.FLUID_OUTPUT && stack.getFluid().matchesType(getPumpedFluid().getFluid());
+    }
+
+    @Override
+    public boolean canInsertFluid(int index, FluidStack stack, Direction direction) {
+        return index == 1 && IOs.get(direction) == IOType.FLUID_INPUT && stack.getFluid().matchesType(ICFluids.STEAM);
+    }
+
+    @Override
+    public Map<Direction, IOType> getIOStatus() {
+        return IOs;
+    }
+
+    @Override
+    public void nextIOType(Direction dir) {
+        if (dir == getCachedState().get(Properties.FACING))
+            throw new IllegalArgumentException("Cannot apply IO Type on machine's facing face.");
+
+        IOs.computeIfPresent(dir, (d, io) -> io.next(IOType.TransferType.FLUID));
+    }
+}

@@ -1,10 +1,15 @@
-package io.github.chaosunity.ic.blocks;
+package io.github.chaosunity.ic.blocks.machine;
 
-import io.github.chaosunity.ic.blockentity.BoilerBlockEntity;
+import io.github.chaosunity.ic.api.variant.MachineVariant;
+import io.github.chaosunity.ic.blockentity.machine.BoilerBlockEntity;
+import io.github.chaosunity.ic.blocks.HorizontalMachineBlock;
 import io.github.chaosunity.ic.registry.ICItems;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
@@ -12,6 +17,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsage;
 import net.minecraft.item.Items;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
@@ -20,19 +28,20 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
-public class BoilerBlock extends MachineBlock implements BlockEntityProvider {
+public class BoilerBlock extends HorizontalMachineBlock {
     public static final BooleanProperty LIT = Properties.LIT;
 
     public BoilerBlock(MachineVariant variant) {
         super(FabricBlockSettings.of(Material.METAL)
                 .strength(3.0F)
                 .requiresTool()
-                .breakByTool(FabricToolTags.PICKAXES, variant == MachineVariant.COPPER ? 1 : 2)
+                .breakByTool(FabricToolTags.PICKAXES, variant.getRequiredToolLevel())
                 .luminance(s -> s.get(LIT) ? 13 : 0), variant);
 
         setDefaultState(getStateManager().getDefaultState().with(LIT, false));
@@ -85,6 +94,7 @@ public class BoilerBlock extends MachineBlock implements BlockEntityProvider {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockRenderType getRenderType(BlockState state) {
         return BlockRenderType.MODEL;
     }
@@ -97,6 +107,25 @@ public class BoilerBlock extends MachineBlock implements BlockEntityProvider {
 
     @Override
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
+        if (state.get(LIT)) {
+            var d = pos.getX() + 0.5D;
+            var e = pos.getY();
+            var f = pos.getZ() + 0.5D;
+
+            if (random.nextDouble() < 0.1D) {
+                world.playSound(d, e, f, SoundEvents.BLOCK_FURNACE_FIRE_CRACKLE, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
+            }
+
+            var direction = state.get(Properties.HORIZONTAL_FACING);
+            var axis = direction.getAxis();
+            var h = random.nextDouble() * 0.6D - 0.3D;
+            var i = axis == Direction.Axis.X ? (double) direction.getOffsetX() * 0.52D : h;
+            var j = random.nextDouble() * 6.0D / 16.0D;
+            var k = axis == Direction.Axis.Z ? (double) direction.getOffsetZ() * 0.52D : h;
+
+            world.addParticle(ParticleTypes.SMOKE, d + i, e + j, f + k, 0.0D, 0.0D, 0.0D);
+            world.addParticle(ParticleTypes.FLAME, d + i, e + j, f + k, 0.0D, 0.0D, 0.0D);
+        }
     }
 
     @Override

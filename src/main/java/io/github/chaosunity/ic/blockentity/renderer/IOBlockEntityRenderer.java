@@ -3,6 +3,8 @@ package io.github.chaosunity.ic.blockentity.renderer;
 import io.github.chaosunity.ic.IndustrialChronicle;
 import io.github.chaosunity.ic.api.io.BlockEntityWithIO;
 import io.github.chaosunity.ic.blockentity.MachineBlockEntity;
+import io.github.chaosunity.ic.blocks.FacingMachineBlock;
+import io.github.chaosunity.ic.blocks.HorizontalMachineBlock;
 import io.github.chaosunity.ic.blocks.IOType;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
@@ -61,7 +63,8 @@ public class IOBlockEntityRenderer<T extends MachineBlockEntity<?, ?> & BlockEnt
         var matrixNormal = matrixStack.peek().getNormal();
 
         for (var dir : Direction.values()) {
-            if (dir == be.getCachedState().get(Properties.HORIZONTAL_FACING)) continue;
+            if ((be.getCachedState().getBlock() instanceof FacingMachineBlock && dir == be.getCachedState().get(Properties.FACING)) || (be.getCachedState().getBlock() instanceof HorizontalMachineBlock && dir == be.getCachedState().get(Properties.HORIZONTAL_FACING)))
+                continue;
 
             var IOs = be.getIOStatus().get(dir);
 

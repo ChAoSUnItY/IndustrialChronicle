@@ -1,5 +1,6 @@
 package io.github.chaosunity.ic.blocks.conduit;
 
+import io.github.chaosunity.ic.api.variant.ConduitVariant;
 import io.github.chaosunity.ic.blocks.IVariantBlock;
 import net.minecraft.block.*;
 import net.minecraft.fluid.Fluid;

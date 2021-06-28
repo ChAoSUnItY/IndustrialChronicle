@@ -1,17 +1,17 @@
 package io.github.chaosunity.ic.registry;
 
-import io.github.chaosunity.ic.blockentity.BoilerBlockEntity;
-import io.github.chaosunity.ic.blockentity.PumpBlockEntity;
+import io.github.chaosunity.ic.api.variant.ConduitVariant;
+import io.github.chaosunity.ic.api.variant.IVariant;
+import io.github.chaosunity.ic.api.variant.MachineVariant;
+import io.github.chaosunity.ic.blockentity.machine.BoilerBlockEntity;
+import io.github.chaosunity.ic.blockentity.machine.PumpBlockEntity;
 import io.github.chaosunity.ic.blockentity.conduit.PipeBlockEntity;
-import io.github.chaosunity.ic.blocks.MachineVariant;
-import io.github.chaosunity.ic.blocks.conduit.ConduitVariant;
 import io.github.chaosunity.ic.utils.Utils;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 
@@ -28,9 +28,9 @@ public final class ICBlockEntities {
         PIPE_BLOCK_ENTITIES = register(PipeBlockEntity.class, ConduitVariant.class, ICBlocks.PIPES.values().toArray(Block[]::new));
     }
 
-    private static <T extends BlockEntity, V extends Enum<V> & StringIdentifiable> EnumMap<V, BlockEntityType<T>> register(Class<T> blockEntityClazz,
-                                                                                                                           Class<V> variantClazz,
-                                                                                                                           Block... parent) {
+    private static <T extends BlockEntity, V extends Enum<V> & IVariant> EnumMap<V, BlockEntityType<T>> register(Class<T> blockEntityClazz,
+                                                                                                                 Class<V> variantClazz,
+                                                                                                                 Block... parent) {
         var enums = variantClazz.getEnumConstants();
 
         return Utils.make(Utils.make(variantClazz), (i, map) -> {

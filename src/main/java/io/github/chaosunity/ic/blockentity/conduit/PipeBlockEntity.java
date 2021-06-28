@@ -5,7 +5,7 @@ import io.github.chaosunity.ic.api.fluid.FluidStack;
 import io.github.chaosunity.ic.api.fluid.SidedFluidContainer;
 import io.github.chaosunity.ic.blockentity.IVariantBlockEntity;
 import io.github.chaosunity.ic.blockentity.ImplementedFluidContainer;
-import io.github.chaosunity.ic.blocks.conduit.ConduitVariant;
+import io.github.chaosunity.ic.api.variant.ConduitVariant;
 import io.github.chaosunity.ic.blocks.conduit.PipeBlock;
 import io.github.chaosunity.ic.registry.ICBlockEntities;
 import net.minecraft.block.BlockState;
@@ -137,6 +137,8 @@ public class PipeBlockEntity extends ConduitBlockEntity<PipeBlockEntity, PipeBlo
     public void update(FluidStack stack) {
         if (world == null) return;
 
+        if (world.isClient) return;
+
         var changed = false;
 
         if (getFluid().getFluid().matchesType(Fluids.EMPTY) && getFluid().mB != 0) {
@@ -146,6 +148,7 @@ public class PipeBlockEntity extends ConduitBlockEntity<PipeBlockEntity, PipeBlo
 
         if (changed) {
             markDirty(world, pos, getCachedState());
+            sync();
         }
     }
 

@@ -1,7 +1,7 @@
 package io.github.chaosunity.ic.blocks;
 
-import net.minecraft.util.StringIdentifiable;
+import io.github.chaosunity.ic.api.variant.IVariant;
 
-public interface IVariantBlock<V extends Enum<V> & StringIdentifiable> {
+public interface IVariantBlock<V extends Enum<V> & IVariant> {
     V getVariant();
 }

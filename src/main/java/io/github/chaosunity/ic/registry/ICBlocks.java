@@ -1,11 +1,12 @@
 package io.github.chaosunity.ic.registry;
 
 import io.github.chaosunity.ic.IndustrialChronicle;
-import io.github.chaosunity.ic.blocks.BoilerBlock;
+import io.github.chaosunity.ic.api.variant.IVariant;
+import io.github.chaosunity.ic.blocks.machine.BoilerBlock;
 import io.github.chaosunity.ic.blocks.IVariantBlock;
-import io.github.chaosunity.ic.blocks.MachineVariant;
-import io.github.chaosunity.ic.blocks.PumpBlock;
-import io.github.chaosunity.ic.blocks.conduit.ConduitVariant;
+import io.github.chaosunity.ic.api.variant.MachineVariant;
+import io.github.chaosunity.ic.blocks.machine.PumpBlock;
+import io.github.chaosunity.ic.api.variant.ConduitVariant;
 import io.github.chaosunity.ic.blocks.conduit.PipeBlock;
 import io.github.chaosunity.ic.utils.Utils;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -14,7 +15,6 @@ import net.minecraft.block.*;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.registry.Registry;
 
 import java.util.EnumMap;
@@ -35,7 +35,7 @@ public final class ICBlocks {
         PIPES = register(ConduitVariant.class, PipeBlock.class, ICItemGroup.IC_ITEMGROUP_MECHANICAL, "pipe");
     }
 
-    private static <V extends Enum<V> & StringIdentifiable, B extends Block> EnumMap<V, B> register(Class<V> variantClazz, Class<B> blockClazz, ItemGroup group, String id) {
+    private static <V extends Enum<V> & IVariant, B extends Block> EnumMap<V, B> register(Class<V> variantClazz, Class<B> blockClazz, ItemGroup group, String id) {
         return Utils.make(variantClazz, (v, map) -> {
             try {
                 var ctor = blockClazz.getConstructor(variantClazz);

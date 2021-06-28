@@ -2,7 +2,7 @@ package io.github.chaosunity.ic.registry;
 
 
 import io.github.chaosunity.ic.IndustrialChronicle;
-import io.github.chaosunity.ic.blocks.MachineVariant;
+import io.github.chaosunity.ic.api.variant.MachineVariant;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
