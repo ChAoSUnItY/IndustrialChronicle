@@ -3,7 +3,9 @@ package io.github.chaosunity.ic.blockentity;
 import io.github.chaosunity.ic.api.fluid.FluidHelper;
 import io.github.chaosunity.ic.api.fluid.FluidStack;
 import io.github.chaosunity.ic.api.fluid.SidedFluidContainer;
+import io.github.chaosunity.ic.api.io.BlockEntityWithIO;
 import io.github.chaosunity.ic.blocks.BoilerBlock;
+import io.github.chaosunity.ic.blocks.IOType;
 import io.github.chaosunity.ic.blocks.MachineVariant;
 import io.github.chaosunity.ic.client.screen.BoilerScreenHandler;
 import io.github.chaosunity.ic.registry.ICBlockEntities;
@@ -19,6 +21,7 @@ import net.minecraft.inventory.Inventories;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtHelper;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -31,9 +34,10 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
+import java.util.Map;
 
 public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, BoilerBlock>
-        implements ExtendedScreenHandlerFactory, ImplementedInventory, ImplementedFluidContainer {
+        implements ExtendedScreenHandlerFactory, ImplementedInventory, ImplementedFluidContainer, BlockEntityWithIO {
     public static final int WATER_CAPACITY = 10000;
     public static final int STEAM_CAPACITY = 10000;
     public static final int[] TRANSFORM_RATE = new int[]{
@@ -52,6 +56,7 @@ public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, Boi
             new FluidStack(ICFluids.STEAM, STEAM_CAPACITY)
     );
 
+    private final Map<Direction, IOType> IOs = createIOMap();
     private int burnTime;
     private int fuelTime;
 
@@ -67,6 +72,7 @@ public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, Boi
         super.readNbt(nbt);
         Inventories.readNbt(nbt, inventory);
         FluidHelper.readNBT(nbt, fluids);
+        readIOMap(nbt, IOs);
         burnTime = nbt.getInt("BurnTime");
         fuelTime = nbt.getInt("FuelTime");
     }
@@ -75,19 +81,20 @@ public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, Boi
     public NbtCompound writeNbt(NbtCompound nbt) {
         Inventories.writeNbt(nbt, inventory);
         FluidHelper.writeNBT(nbt, fluids);
+        writeIOMap(nbt, IOs);
         nbt.putInt("BurnTime", burnTime);
         nbt.putInt("FuelTime", fuelTime);
         return super.writeNbt(nbt);
     }
 
     @Override
-    public NbtCompound toClientTag(NbtCompound tag) {
-        return writeNbt(tag);
+    public Map<Direction, IOType> getIOStatus() {
+        return IOs;
     }
 
     @Override
-    public void fromClientTag(NbtCompound tag) {
-        readNbt(tag);
+    public void nextIOType(Direction dir) {
+        IOs.computeIfPresent(dir, (d, io) -> io.next());
     }
 
     public boolean isBurning() {

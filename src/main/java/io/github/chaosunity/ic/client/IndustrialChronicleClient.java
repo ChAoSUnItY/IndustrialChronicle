@@ -35,18 +35,27 @@ public class IndustrialChronicleClient implements ClientModInitializer {
         ICScreens.register();
         ICBlockEntityRenderers.register();
 
+        registerRenderTextures("block/io/fluid_input");
+        registerRenderTextures("block/io/fluid_output");
+
         setupFluidRendering(ICFluids.STEAM, ICFluids.FLOWING_STEAM, new Identifier(IndustrialChronicle.MODID, "steam"), 0xFFFFFF);
         BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), ICFluids.STEAM, ICFluids.FLOWING_STEAM);
     }
 
-    public static void setupFluidRendering(final Fluid still, final Fluid flowing, final Identifier textureFluidId, final int color) {
+    private static void registerRenderTextures(String path) {
+        registerRenderTextures(new Identifier(IndustrialChronicle.MODID, path));
+    }
+
+    private static void registerRenderTextures(Identifier id) {
+        ClientSpriteRegistryCallback.event(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).register((atlasTexture, registry) -> registry.register(id));
+    }
+
+    private static void setupFluidRendering(final Fluid still, final Fluid flowing, final Identifier textureFluidId, final int color) {
         final Identifier stillSpriteId = new Identifier(textureFluidId.getNamespace(), "block/" + textureFluidId.getPath() + "_still");
         final Identifier flowingSpriteId = new Identifier(textureFluidId.getNamespace(), "block/" + textureFluidId.getPath() + "_flow");
 
-        ClientSpriteRegistryCallback.event(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).register((atlasTexture, registry) -> {
-            registry.register(stillSpriteId);
-            registry.register(flowingSpriteId);
-        });
+        registerRenderTextures(stillSpriteId);
+        registerRenderTextures(flowingSpriteId);
 
         final Identifier fluidId = Registry.FLUID.getId(still);
         final Identifier listenerId = new Identifier(fluidId.getNamespace(), fluidId.getPath() + "_reload_listener");

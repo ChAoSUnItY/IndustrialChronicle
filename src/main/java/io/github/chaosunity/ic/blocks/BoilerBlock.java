@@ -1,6 +1,7 @@
 package io.github.chaosunity.ic.blocks;
 
 import io.github.chaosunity.ic.blockentity.BoilerBlockEntity;
+import io.github.chaosunity.ic.registry.ICItems;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.*;
@@ -47,20 +48,22 @@ public class BoilerBlock extends MachineBlock implements BlockEntityProvider {
                 var stack = player.getStackInHand(hand);
 
                 if (stack.isOf(Items.WATER_BUCKET) && bbe.getWater().canAddFullBucket()) {
-                    if(!player.isCreative()){
+                    if (!player.isCreative()) {
                         player.setStackInHand(hand, ItemUsage.exchangeStack(stack, player, new ItemStack(Items.BUCKET)));
                     }
 
                     bbe.getWater().add(1000);
-                    bbe.sync();
                 } else if (stack.isOf(Items.BUCKET) && bbe.getWater().canFullFillBucket()) {
                     player.setStackInHand(hand, ItemUsage.exchangeStack(stack, player, new ItemStack(Items.WATER_BUCKET)));
 
                     bbe.getWater().remove(1000);
-                    bbe.sync();
+                } else if (stack.isOf(ICItems.WRENCH) && hit.getSide() != state.get(Properties.HORIZONTAL_FACING)) {
+                    bbe.nextIOType(hit.getSide());
                 } else {
                     player.openHandledScreen(bbe);
                 }
+
+                bbe.sync();
             }
             return ActionResult.CONSUME;
         } else {
