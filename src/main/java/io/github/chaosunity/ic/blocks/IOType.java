@@ -2,7 +2,9 @@ package io.github.chaosunity.ic.blocks;
 
 import net.minecraft.util.StringIdentifiable;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public enum IOType implements StringIdentifiable {
     NONE("none"), ITEM_INPUT("item_input"), ITEM_OUTPUT("item_output"), FLUID_INPUT("item_input"),

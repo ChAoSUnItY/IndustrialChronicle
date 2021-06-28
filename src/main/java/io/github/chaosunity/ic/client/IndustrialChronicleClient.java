@@ -62,7 +62,7 @@ public class IndustrialChronicleClient implements ClientModInitializer {
         final Identifier fluidId = Registry.FLUID.getId(still);
         final Identifier listenerId = new Identifier(fluidId.getNamespace(), fluidId.getPath() + "_reload_listener");
 
-        final Sprite[] fluidSprites = { null, null };
+        final Sprite[] fluidSprites = {null, null};
 
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
             @Override
@@ -78,8 +78,7 @@ public class IndustrialChronicleClient implements ClientModInitializer {
             }
         });
 
-        final FluidRenderHandler renderHandler = new FluidRenderHandler()
-        {
+        final FluidRenderHandler renderHandler = new FluidRenderHandler() {
             @Override
             public Sprite[] getFluidSprites(BlockRenderView view, BlockPos pos, FluidState state) {
                 return fluidSprites;

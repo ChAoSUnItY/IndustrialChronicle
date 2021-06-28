@@ -1,17 +1,18 @@
 package io.github.chaosunity.ic.registry;
 
 import io.github.chaosunity.ic.IndustrialChronicle;
-import io.github.chaosunity.ic.api.variant.IVariant;
-import io.github.chaosunity.ic.blocks.machine.BoilerBlock;
-import io.github.chaosunity.ic.blocks.IVariantBlock;
-import io.github.chaosunity.ic.api.variant.MachineVariant;
-import io.github.chaosunity.ic.blocks.machine.PumpBlock;
 import io.github.chaosunity.ic.api.variant.ConduitVariant;
+import io.github.chaosunity.ic.api.variant.IVariant;
+import io.github.chaosunity.ic.api.variant.MachineVariant;
+import io.github.chaosunity.ic.blocks.IVariantBlock;
 import io.github.chaosunity.ic.blocks.conduit.PipeBlock;
+import io.github.chaosunity.ic.blocks.machine.BoilerBlock;
+import io.github.chaosunity.ic.blocks.machine.PumpBlock;
 import io.github.chaosunity.ic.utils.Utils;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.FluidBlock;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;

@@ -30,13 +30,13 @@ public class BoilerScreenHandler extends ScreenHandler {
         addSlot(new FuelSlot(inventory, 0, 80, 37));
 
         int l;
-        for(l = 0; l < 3; ++l) {
-            for(int k = 0; k < 9; ++k) {
+        for (l = 0; l < 3; ++l) {
+            for (int k = 0; k < 9; ++k) {
                 addSlot(new Slot(playerInventory, k + l * 9 + 9, 8 + k * 18, 84 + l * 18));
             }
         }
 
-        for(l = 0; l < 9; ++l) {
+        for (l = 0; l < 9; ++l) {
             addSlot(new Slot(playerInventory, l, 8 + l * 18, 142));
         }
     }

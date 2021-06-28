@@ -1,7 +1,6 @@
 package io.github.chaosunity.ic.blocks.machine;
 
 import io.github.chaosunity.ic.api.variant.MachineVariant;
-import io.github.chaosunity.ic.blockentity.machine.BoilerBlockEntity;
 import io.github.chaosunity.ic.blockentity.machine.PumpBlockEntity;
 import io.github.chaosunity.ic.blocks.FacingMachineBlock;
 import io.github.chaosunity.ic.registry.ICItems;
