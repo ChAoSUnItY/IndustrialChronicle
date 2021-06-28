@@ -37,6 +37,8 @@ public class IndustrialChronicleClient implements ClientModInitializer {
 
         registerRenderTextures("block/io/fluid_input");
         registerRenderTextures("block/io/fluid_output");
+        registerRenderTextures("block/io/item_output");
+        registerRenderTextures("block/io/item_input");
 
         setupFluidRendering(ICFluids.STEAM, ICFluids.FLOWING_STEAM, new Identifier(IndustrialChronicle.MODID, "steam"), 0xFFFFFF);
         BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), ICFluids.STEAM, ICFluids.FLOWING_STEAM);
@@ -76,7 +78,6 @@ public class IndustrialChronicleClient implements ClientModInitializer {
             }
         });
 
-        // The FluidRenderer gets the sprites and color from a FluidRenderHandler during rendering
         final FluidRenderHandler renderHandler = new FluidRenderHandler()
         {
             @Override

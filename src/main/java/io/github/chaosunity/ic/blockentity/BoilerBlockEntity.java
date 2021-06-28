@@ -98,7 +98,7 @@ public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, Boi
         if (dir == getCachedState().get(Properties.HORIZONTAL_FACING))
             throw new IllegalArgumentException("Cannot apply IO Type on machine's facing face.");
 
-        IOs.computeIfPresent(dir, (d, io) -> io.next());
+        IOs.computeIfPresent(dir, (d, io) -> io.next(IOType.TransferType.ITEM, IOType.TransferType.FLUID));
     }
 
     public boolean isBurning() {
@@ -224,27 +224,26 @@ public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, Boi
 
     @Override
     public boolean canInsert(int slot, ItemStack stack, Direction direction) {
-        return true;
+        return IOs.get(direction) == IOType.ITEM_INPUT;
     }
 
     @Override
     public boolean canExtract(int slot, ItemStack stack, Direction direction) {
-        return true;
+        return IOs.get(direction) == IOType.ITEM_OUTPUT;
     }
 
     @Override
     public void update(FluidStack stack) {
-
     }
 
     @Override
     public boolean canInsertFluid(int index, FluidStack stack, Direction direction) {
-        return index == 0 && IOs.get(direction) == IOType.INPUT && stack.getFluid().matchesType(Fluids.WATER);
+        return index == 0 && IOs.get(direction) == IOType.FLUID_INPUT && stack.getFluid().matchesType(Fluids.WATER);
     }
 
     @Override
     public boolean canExtractFluid(int index, FluidStack stack, Direction direction) {
-        return index == 1 && IOs.get(direction) == IOType.OUTPUT && stack.getFluid().matchesType(ICFluids.STEAM);
+        return index == 1 && IOs.get(direction) == IOType.FLUID_OUTPUT && stack.getFluid().matchesType(ICFluids.STEAM);
     }
 
     @Override

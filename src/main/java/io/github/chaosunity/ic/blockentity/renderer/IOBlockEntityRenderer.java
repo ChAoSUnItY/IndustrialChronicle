@@ -1,7 +1,8 @@
 package io.github.chaosunity.ic.blockentity.renderer;
 
 import io.github.chaosunity.ic.IndustrialChronicle;
-import io.github.chaosunity.ic.blockentity.BoilerBlockEntity;
+import io.github.chaosunity.ic.api.io.BlockEntityWithIO;
+import io.github.chaosunity.ic.blockentity.MachineBlockEntity;
 import io.github.chaosunity.ic.blocks.IOType;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
@@ -13,11 +14,11 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 
 import java.awt.*;
-import java.util.Arrays;
-import java.util.Comparator;
 
-public class BoilerBlockEntityRenderer implements BlockEntityRenderer<BoilerBlockEntity> {
-    private static final Identifier[] FLUID_IO = new Identifier[] {
+public class IOBlockEntityRenderer<T extends MachineBlockEntity<?, ?> & BlockEntityWithIO> implements BlockEntityRenderer<T> {
+    private static final Identifier[] FLUID_IO = new Identifier[]{
+            new Identifier(IndustrialChronicle.MODID, "textures/block/io/item_input.png"),
+            new Identifier(IndustrialChronicle.MODID, "textures/block/io/item_output.png"),
             new Identifier(IndustrialChronicle.MODID, "textures/block/io/fluid_input.png"),
             new Identifier(IndustrialChronicle.MODID, "textures/block/io/fluid_output.png")
     };
@@ -31,11 +32,12 @@ public class BoilerBlockEntityRenderer implements BlockEntityRenderer<BoilerBloc
             new Vec3d(1.01, 0.5, 0.5)
     };
 
-    public BoilerBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
+    @SuppressWarnings("unused")
+    public IOBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
     }
 
     @Override
-    public void render(BoilerBlockEntity be, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+    public void render(T be, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         var translationOffset = new Vec3d(0, 0, 0);
 
         matrices.push();
@@ -51,25 +53,25 @@ public class BoilerBlockEntityRenderer implements BlockEntityRenderer<BoilerBloc
         matrices.pop();
     }
 
-    private static void drawCubeQuads(MatrixStack matrixStack,
-                                      VertexConsumerProvider renderBuffer,
-                                      int combinedLight,
-                                      BoilerBlockEntity be) {
+    private void drawCubeQuads(MatrixStack matrixStack,
+                               VertexConsumerProvider renderBuffer,
+                               int combinedLight,
+                               T be) {
         var matrixPos = matrixStack.peek().getModel();
         var matrixNormal = matrixStack.peek().getNormal();
 
         for (var dir : Direction.values()) {
             if (dir == be.getCachedState().get(Properties.HORIZONTAL_FACING)) continue;
 
-            var IOStatus = be.getIOStatus().get(dir);
+            var IOs = be.getIOStatus().get(dir);
 
-            if (IOStatus == IOType.NONE) continue;
+            if (IOs == IOType.NONE) continue;
 
             addFace(
                     dir,
                     matrixPos,
                     matrixNormal,
-                    renderBuffer.getBuffer(RenderLayer.getEntityCutoutNoCull(FLUID_IO[IOStatus.ordinal() - 1])),
+                    renderBuffer.getBuffer(RenderLayer.getEntityCutoutNoCull(FLUID_IO[IOs.ordinal() - 1])),
                     MIDPOINTS[dir.getId()],
                     new Vector2f(0.0F, 1.0F),
                     combinedLight
@@ -77,13 +79,13 @@ public class BoilerBlockEntityRenderer implements BlockEntityRenderer<BoilerBloc
         }
     }
 
-    private static void addFace(Direction whichFace,
-                                Matrix4f matrixPos,
-                                Matrix3f matrixNormal,
-                                VertexConsumer renderBuffer,
-                                Vec3d centrePos,
-                                Vector2f bottomLeftUV,
-                                int lightmapValue) {
+    private void addFace(Direction whichFace,
+                         Matrix4f matrixPos,
+                         Matrix3f matrixNormal,
+                         VertexConsumer renderBuffer,
+                         Vec3d centrePos,
+                         Vector2f bottomLeftUV,
+                         int lightmapValue) {
         Vec3f leftToRightDirection, bottomToTopDirection;
 
         switch (whichFace) {
@@ -155,19 +157,19 @@ public class BoilerBlockEntityRenderer implements BlockEntityRenderer<BoilerBloc
         );
     }
 
-    private static void addQuad(Matrix4f matrixPos, Matrix3f matrixNormal, VertexConsumer renderBuffer,
-                                Vec3f blpos, Vec3f brpos, Vec3f trpos, Vec3f tlpos,
-                                Vector2f blUVpos, Vector2f brUVpos, Vector2f trUVpos, Vector2f tlUVpos,
-                                Vec3f normalVector, int lightmapValue) {
+    private void addQuad(Matrix4f matrixPos, Matrix3f matrixNormal, VertexConsumer renderBuffer,
+                         Vec3f blpos, Vec3f brpos, Vec3f trpos, Vec3f tlpos,
+                         Vector2f blUVpos, Vector2f brUVpos, Vector2f trUVpos, Vector2f tlUVpos,
+                         Vec3f normalVector, int lightmapValue) {
         addQuadVertex(matrixPos, matrixNormal, renderBuffer, blpos, blUVpos, normalVector, lightmapValue);
         addQuadVertex(matrixPos, matrixNormal, renderBuffer, brpos, brUVpos, normalVector, lightmapValue);
         addQuadVertex(matrixPos, matrixNormal, renderBuffer, trpos, trUVpos, normalVector, lightmapValue);
         addQuadVertex(matrixPos, matrixNormal, renderBuffer, tlpos, tlUVpos, normalVector, lightmapValue);
     }
 
-    private static void addQuadVertex(Matrix4f matrixPos, Matrix3f matrixNormal, VertexConsumer renderBuffer,
-                                      Vec3f pos, Vector2f texUV,
-                                      Vec3f normalVector, int lightmapValue) {
+    private void addQuadVertex(Matrix4f matrixPos, Matrix3f matrixNormal, VertexConsumer renderBuffer,
+                               Vec3f pos, Vector2f texUV,
+                               Vec3f normalVector, int lightmapValue) {
         renderBuffer.vertex(matrixPos, pos.getX(), pos.getY(), pos.getZ())
                 .color(Color.WHITE.getRed(), Color.WHITE.getGreen(), Color.WHITE.getBlue(), Color.WHITE.getAlpha())
                 .texture(texUV.getX(), texUV.getY())
