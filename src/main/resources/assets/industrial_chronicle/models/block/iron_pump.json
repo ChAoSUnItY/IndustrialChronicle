@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "industrial_chronicle:block/iron_pump",
+    "north": "industrial_chronicle:block/iron_pump_side",
+    "south": "industrial_chronicle:block/iron_pump_side",
+    "east": "industrial_chronicle:block/iron_pump_side",
+    "west": "industrial_chronicle:block/iron_pump_side",
+    "up": "industrial_chronicle:block/iron_frame",
+    "down": "industrial_chronicle:block/iron_pump"
+  }
+}

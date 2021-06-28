@@ -6,7 +6,7 @@
     "south": "industrial_chronicle:block/iron_boiler_back",
     "east": "industrial_chronicle:block/iron_boiler_left",
     "west": "industrial_chronicle:block/iron_boiler_right",
-    "up": "industrial_chronicle:block/iron_boiler_horizontal",
-    "down": "industrial_chronicle:block/iron_boiler_horizontal"
+    "up": "industrial_chronicle:block/iron_frame",
+    "down": "industrial_chronicle:block/iron_frame"
   }
 }
