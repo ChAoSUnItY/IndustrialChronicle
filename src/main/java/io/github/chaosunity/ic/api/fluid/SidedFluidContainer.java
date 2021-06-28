@@ -19,20 +19,29 @@ public interface SidedFluidContainer extends FluidContainer {
     @SuppressWarnings("unchecked")
     static <T extends BlockEntity & SidedFluidContainer> List<Pair<T, List<Integer>>> getInsertableAlias(World world, BlockPos pos, FluidStack fluid) {
         var insertableContainers = new ArrayList<Pair<T, List<Integer>>>();
+        var be = world.getBlockEntity(pos);
 
-        for (var dir : Direction.values()) {
-            var be2 = world.getBlockEntity(pos.offset(dir));
-
-            if (be2 instanceof SidedFluidContainer fc) {
-                var indexes = new ArrayList<Integer>();
+        if (be instanceof SidedFluidContainer fc)
+            for (var dir : Direction.values()) {
+                var canExtract = false;
 
                 for (var i = 0; i < fc.containerSize(); i++)
-                    if (fc.canInsertFluid(i, fluid, dir.getOpposite()))
-                        indexes.add(i);
+                    if (fc.canExtractFluid(i, fluid, dir)) canExtract = true;
 
-                if (!indexes.isEmpty()) insertableContainers.add(Pair.of((T) fc, indexes));
+                if (!canExtract) continue;
+
+                var be2 = world.getBlockEntity(pos.offset(dir));
+
+                if (be2 instanceof SidedFluidContainer fc2) {
+                    var indexes = new ArrayList<Integer>();
+
+                    for (var i = 0; i < fc2.containerSize(); i++)
+                        if (fc2.canInsertFluid(i, fluid, dir.getOpposite()))
+                            indexes.add(i);
+
+                    if (!indexes.isEmpty()) insertableContainers.add(Pair.of((T) fc2, indexes));
+                }
             }
-        }
 
         return insertableContainers;
     }

@@ -21,10 +21,10 @@ import net.minecraft.inventory.Inventories;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtHelper;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.collection.DefaultedList;
@@ -34,6 +34,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, BoilerBlock>
@@ -56,7 +57,7 @@ public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, Boi
             new FluidStack(ICFluids.STEAM, STEAM_CAPACITY)
     );
 
-    private final Map<Direction, IOType> IOs = createIOMap();
+    private final LinkedHashMap<Direction, IOType> IOs = createIOMap();
     private int burnTime;
     private int fuelTime;
 
@@ -94,6 +95,9 @@ public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, Boi
 
     @Override
     public void nextIOType(Direction dir) {
+        if (dir == getCachedState().get(Properties.HORIZONTAL_FACING))
+            throw new IllegalArgumentException("Cannot apply IO Type on machine's facing face.");
+
         IOs.computeIfPresent(dir, (d, io) -> io.next());
     }
 
@@ -235,12 +239,12 @@ public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, Boi
 
     @Override
     public boolean canInsertFluid(int index, FluidStack stack, Direction direction) {
-        return index == 0 && stack.getFluid().matchesType(Fluids.WATER);
+        return index == 0 && IOs.get(direction) == IOType.INPUT && stack.getFluid().matchesType(Fluids.WATER);
     }
 
     @Override
     public boolean canExtractFluid(int index, FluidStack stack, Direction direction) {
-        return index == 1 && stack.getFluid().matchesType(ICFluids.STEAM);
+        return index == 1 && IOs.get(direction) == IOType.OUTPUT && stack.getFluid().matchesType(ICFluids.STEAM);
     }
 
     @Override

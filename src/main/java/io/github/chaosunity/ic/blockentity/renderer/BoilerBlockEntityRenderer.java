@@ -2,6 +2,7 @@ package io.github.chaosunity.ic.blockentity.renderer;
 
 import io.github.chaosunity.ic.IndustrialChronicle;
 import io.github.chaosunity.ic.blockentity.BoilerBlockEntity;
+import io.github.chaosunity.ic.blocks.IOType;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
@@ -12,10 +13,14 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 
 import java.awt.*;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class BoilerBlockEntityRenderer implements BlockEntityRenderer<BoilerBlockEntity> {
-    private static final Identifier FLUID_INPUT = new Identifier(IndustrialChronicle.MODID, "textures/block/io/fluid_input.png");
-    private static final Identifier FLUID_OUTPUT = new Identifier(IndustrialChronicle.MODID, "textures/block/io/fluid_output.png");
+    private static final Identifier[] FLUID_IO = new Identifier[] {
+            new Identifier(IndustrialChronicle.MODID, "textures/block/io/fluid_input.png"),
+            new Identifier(IndustrialChronicle.MODID, "textures/block/io/fluid_output.png")
+    };
 
     private static final Vec3d[] MIDPOINTS = new Vec3d[]{
             new Vec3d(0.51, -0.01, 0.5),
@@ -30,7 +35,7 @@ public class BoilerBlockEntityRenderer implements BlockEntityRenderer<BoilerBloc
     }
 
     @Override
-    public void render(BoilerBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+    public void render(BoilerBlockEntity be, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         var translationOffset = new Vec3d(0, 0, 0);
 
         matrices.push();
@@ -39,8 +44,8 @@ public class BoilerBlockEntityRenderer implements BlockEntityRenderer<BoilerBloc
         drawCubeQuads(
                 matrices,
                 vertexConsumers,
-                WorldRenderer.getLightmapCoordinates(entity.getWorld(), entity.getCachedState(), entity.getPos().up()),
-                entity.getCachedState().get(Properties.HORIZONTAL_FACING)
+                WorldRenderer.getLightmapCoordinates(be.getWorld(), be.getCachedState(), be.getPos().up()),
+                be
         );
 
         matrices.pop();
@@ -49,21 +54,23 @@ public class BoilerBlockEntityRenderer implements BlockEntityRenderer<BoilerBloc
     private static void drawCubeQuads(MatrixStack matrixStack,
                                       VertexConsumerProvider renderBuffer,
                                       int combinedLight,
-                                      Direction front) {
-
-        var vertexBuilderBlockQuads = renderBuffer.getBuffer(RenderLayer.getEntityCutoutNoCull(FLUID_OUTPUT));
+                                      BoilerBlockEntity be) {
         var matrixPos = matrixStack.peek().getModel();
         var matrixNormal = matrixStack.peek().getNormal();
 
         for (var dir : Direction.values()) {
-            if (dir == front) continue;
+            if (dir == be.getCachedState().get(Properties.HORIZONTAL_FACING)) continue;
+
+            var IOStatus = be.getIOStatus().get(dir);
+
+            if (IOStatus == IOType.NONE) continue;
 
             addFace(
                     dir,
                     matrixPos,
                     matrixNormal,
-                    vertexBuilderBlockQuads,
-                    MIDPOINTS[dir.ordinal()],
+                    renderBuffer.getBuffer(RenderLayer.getEntityCutoutNoCull(FLUID_IO[IOStatus.ordinal() - 1])),
+                    MIDPOINTS[dir.getId()],
                     new Vector2f(0.0F, 1.0F),
                     combinedLight
             );
