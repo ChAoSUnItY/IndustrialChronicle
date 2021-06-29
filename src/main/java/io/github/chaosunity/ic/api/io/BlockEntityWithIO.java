@@ -1,6 +1,6 @@
 package io.github.chaosunity.ic.api.io;
 
-import io.github.chaosunity.ic.blocks.IOType;
+import io.github.chaosunity.ic.api.variant.IOType;
 import net.minecraft.util.math.Direction;
 
 import java.util.Map;

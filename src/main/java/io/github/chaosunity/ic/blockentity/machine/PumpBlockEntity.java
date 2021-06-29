@@ -8,7 +8,7 @@ import io.github.chaosunity.ic.api.variant.MachineVariant;
 import io.github.chaosunity.ic.blockentity.IVariantBlockEntity;
 import io.github.chaosunity.ic.blockentity.ImplementedFluidContainer;
 import io.github.chaosunity.ic.blockentity.MachineBlockEntity;
-import io.github.chaosunity.ic.blocks.IOType;
+import io.github.chaosunity.ic.api.variant.IOType;
 import io.github.chaosunity.ic.blocks.machine.PumpBlock;
 import io.github.chaosunity.ic.registry.ICBlockEntities;
 import io.github.chaosunity.ic.registry.ICFluids;

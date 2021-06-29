@@ -4,7 +4,9 @@ import io.github.chaosunity.ic.IndustrialChronicle;
 import io.github.chaosunity.ic.api.variant.ConduitVariant;
 import io.github.chaosunity.ic.api.variant.IVariant;
 import io.github.chaosunity.ic.api.variant.MachineVariant;
+import io.github.chaosunity.ic.api.variant.OreVariant;
 import io.github.chaosunity.ic.blocks.IVariantBlock;
+import io.github.chaosunity.ic.blocks.OreBlock;
 import io.github.chaosunity.ic.blocks.conduit.PipeBlock;
 import io.github.chaosunity.ic.blocks.machine.BoilerBlock;
 import io.github.chaosunity.ic.blocks.machine.PumpBlock;
@@ -23,6 +25,8 @@ import java.util.EnumMap;
 public final class ICBlocks {
     public static Block STEAM;
 
+    public static EnumMap<OreVariant, OreBlock> ORES;
+
     public static EnumMap<MachineVariant, PumpBlock> PUMPS;
     public static EnumMap<MachineVariant, BoilerBlock> BOILERS;
     public static EnumMap<ConduitVariant, PipeBlock> PIPES;
@@ -30,6 +34,8 @@ public final class ICBlocks {
     public static void register() {
         STEAM = Registry.register(Registry.BLOCK, new Identifier(IndustrialChronicle.MODID, "steam"), new FluidBlock(ICFluids.STEAM, FabricBlockSettings.copy(net.minecraft.block.Blocks.WATER)) {
         });
+
+        ORES = register(OreVariant.class, OreBlock.class, ICItemGroup.IC_ITEMGROUP_METAL, "ore");
 
         PUMPS = register(MachineVariant.class, PumpBlock.class, ICItemGroup.IC_ITEMGROUP_MECHANICAL, "pump");
         BOILERS = register(MachineVariant.class, BoilerBlock.class, ICItemGroup.IC_ITEMGROUP_MECHANICAL, "boiler");

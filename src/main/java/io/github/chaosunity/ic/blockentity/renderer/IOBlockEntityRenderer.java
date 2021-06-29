@@ -5,7 +5,7 @@ import io.github.chaosunity.ic.api.io.BlockEntityWithIO;
 import io.github.chaosunity.ic.blockentity.MachineBlockEntity;
 import io.github.chaosunity.ic.blocks.FacingMachineBlock;
 import io.github.chaosunity.ic.blocks.HorizontalMachineBlock;
-import io.github.chaosunity.ic.blocks.IOType;
+import io.github.chaosunity.ic.api.variant.IOType;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;

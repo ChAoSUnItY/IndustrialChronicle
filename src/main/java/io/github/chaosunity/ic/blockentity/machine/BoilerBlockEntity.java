@@ -9,7 +9,7 @@ import io.github.chaosunity.ic.blockentity.IVariantBlockEntity;
 import io.github.chaosunity.ic.blockentity.ImplementedFluidContainer;
 import io.github.chaosunity.ic.blockentity.ImplementedInventory;
 import io.github.chaosunity.ic.blockentity.MachineBlockEntity;
-import io.github.chaosunity.ic.blocks.IOType;
+import io.github.chaosunity.ic.api.variant.IOType;
 import io.github.chaosunity.ic.blocks.machine.BoilerBlock;
 import io.github.chaosunity.ic.client.screen.BoilerScreenHandler;
 import io.github.chaosunity.ic.registry.ICBlockEntities;

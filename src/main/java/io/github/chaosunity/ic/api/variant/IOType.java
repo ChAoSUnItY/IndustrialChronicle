@@ -1,4 +1,4 @@
-package io.github.chaosunity.ic.blocks;
+package io.github.chaosunity.ic.api.variant;
 
 import net.minecraft.util.StringIdentifiable;
 
