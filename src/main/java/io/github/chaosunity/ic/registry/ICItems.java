@@ -5,6 +5,7 @@ import io.github.chaosunity.ic.api.variant.IVariant;
 import io.github.chaosunity.ic.api.variant.OreVariant;
 import io.github.chaosunity.ic.items.IVariantItem;
 import io.github.chaosunity.ic.items.IngotItem;
+import io.github.chaosunity.ic.items.RawOreItem;
 import io.github.chaosunity.ic.items.WrenchItem;
 import io.github.chaosunity.ic.utils.Utils;
 import net.minecraft.item.BucketItem;
@@ -19,18 +20,20 @@ public final class ICItems {
     public static Item WRENCH;
 
     public static EnumMap<OreVariant, IngotItem> METAL_INGOT;
+    public static EnumMap<OreVariant, RawOreItem> RAW_ORE;
 
     public static void register() {
-        STEAM_BUCKET = Registry.register(Registry.ITEM, new Identifier(IndustrialChronicle.MODID, "steam_bucket"), new BucketItem(ICFluids.STEAM, new Item.Settings().recipeRemainder(net.minecraft.item.Items.BUCKET).maxCount(1).group(ICItemGroup.IC_ITEMGROUP_ITEM)));
+        STEAM_BUCKET = Registry.register(Registry.ITEM, new Identifier(IndustrialChronicle.MODID, "steam_bucket"), new BucketItem(ICFluids.STEAM, new Item.Settings().recipeRemainder(net.minecraft.item.Items.BUCKET).maxCount(1).group(ICItemGroups.IC_ITEMGROUP_ITEM)));
         WRENCH = Registry.register(Registry.ITEM, new Identifier(IndustrialChronicle.MODID, "wrench"), new WrenchItem());
 
-        METAL_INGOT = register(OreVariant.class, IngotItem.class, "ingot");
+        METAL_INGOT = register(OreVariant.class, IngotItem.class, "%s_ingot");
+        RAW_ORE = register(OreVariant.class, RawOreItem.class, "raw_%s");
     }
 
-    private static <V extends Enum<V> & IVariant, I extends Item & IVariantItem<V>> EnumMap<V, I> register(Class<V> variantClazz, Class<I> itemClazz, String id) {
+    private static <V extends Enum<V> & IVariant, I extends Item & IVariantItem<V>> EnumMap<V, I> register(Class<V> variantClazz, Class<I> itemClazz, String idFormat) {
         return Utils.make(variantClazz, (e, map) -> {
             try {
-                var identifier = new Identifier(IndustrialChronicle.MODID, e.asString() + "_" + id);
+                var identifier = new Identifier(IndustrialChronicle.MODID, String.format(idFormat, e.asString()));
                 var ctor = itemClazz.getConstructor(variantClazz);
 
                 map.put(e, Registry.register(Registry.ITEM, identifier, ctor.newInstance(e)));

@@ -9,7 +9,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
-public final class ICItemGroup {
+public final class ICItemGroups {
     public static ItemGroup IC_ITEMGROUP_ITEM = FabricItemGroupBuilder.create(
             new Identifier(IndustrialChronicle.MODID, "ic_itemgroup_item"))
             .icon(() -> new ItemStack(ICItems.WRENCH))

@@ -1,6 +1,6 @@
 package io.github.chaosunity.ic.items;
 
-import io.github.chaosunity.ic.registry.ICItemGroup;
+import io.github.chaosunity.ic.registry.ICItemGroups;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class WrenchItem extends Item {
     public WrenchItem() {
-        super(new FabricItemSettings().group(ICItemGroup.IC_ITEMGROUP_ITEM).maxCount(1));
+        super(new FabricItemSettings().group(ICItemGroups.IC_ITEMGROUP_ITEM).maxCount(1));
     }
 
     @Override

@@ -35,11 +35,11 @@ public final class ICBlocks {
         STEAM = Registry.register(Registry.BLOCK, new Identifier(IndustrialChronicle.MODID, "steam"), new FluidBlock(ICFluids.STEAM, FabricBlockSettings.copy(net.minecraft.block.Blocks.WATER)) {
         });
 
-        ORES = register(OreVariant.class, OreBlock.class, ICItemGroup.IC_ITEMGROUP_METAL, "ore");
+        ORES = register(OreVariant.class, OreBlock.class, ICItemGroups.IC_ITEMGROUP_METAL, "ore");
 
-        PUMPS = register(MachineVariant.class, PumpBlock.class, ICItemGroup.IC_ITEMGROUP_MECHANICAL, "pump");
-        BOILERS = register(MachineVariant.class, BoilerBlock.class, ICItemGroup.IC_ITEMGROUP_MECHANICAL, "boiler");
-        PIPES = register(ConduitVariant.class, PipeBlock.class, ICItemGroup.IC_ITEMGROUP_MECHANICAL, "pipe");
+        PUMPS = register(MachineVariant.class, PumpBlock.class, ICItemGroups.IC_ITEMGROUP_MECHANICAL, "pump");
+        BOILERS = register(MachineVariant.class, BoilerBlock.class, ICItemGroups.IC_ITEMGROUP_MECHANICAL, "boiler");
+        PIPES = register(ConduitVariant.class, PipeBlock.class, ICItemGroups.IC_ITEMGROUP_MECHANICAL, "pipe");
     }
 
     private static <V extends Enum<V> & IVariant, B extends Block> EnumMap<V, B> register(Class<V> variantClazz, Class<B> blockClazz, ItemGroup group, String id) {

@@ -6,10 +6,10 @@ import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.item.Item;
 import net.minecraft.util.Rarity;
 
-public class IngotItem extends Item implements IVariantItem<OreVariant> {
+public class RawOreItem extends Item implements IVariantItem<OreVariant> {
     public final OreVariant variant;
 
-    public IngotItem(OreVariant variant) {
+    public RawOreItem(OreVariant variant) {
         super(new FabricItemSettings().group(ICItemGroups.IC_ITEMGROUP_METAL)
                 .fireproof()
                 .rarity(switch (variant) {

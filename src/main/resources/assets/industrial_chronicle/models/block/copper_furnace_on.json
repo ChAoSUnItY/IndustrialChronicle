@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "industrial_chronicle:block/copper_furnace_on",
+    "north": "industrial_chronicle:block/copper_furnace_on",
+    "south": "industrial_chronicle:block/copper_frame_side",
+    "east": "industrial_chronicle:block/copper_frame_side",
+    "west": "industrial_chronicle:block/copper_frame_side",
+    "up": "industrial_chronicle:block/copper_frame",
+    "down": "industrial_chronicle:block/copper_frame"
+  }
+}
