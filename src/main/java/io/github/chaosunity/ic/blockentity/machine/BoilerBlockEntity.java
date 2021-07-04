@@ -8,7 +8,6 @@ import io.github.chaosunity.ic.api.variant.MachineVariant;
 import io.github.chaosunity.ic.blockentity.IVariantBlockEntity;
 import io.github.chaosunity.ic.blockentity.ImplementedFluidContainer;
 import io.github.chaosunity.ic.blockentity.ImplementedInventory;
-import io.github.chaosunity.ic.blockentity.MachineBlockEntity;
 import io.github.chaosunity.ic.api.variant.IOType;
 import io.github.chaosunity.ic.blocks.machine.BoilerBlock;
 import io.github.chaosunity.ic.client.screen.BoilerScreenHandler;
@@ -183,7 +182,7 @@ public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, Boi
         if (fuel.isEmpty()) {
             return 0;
         } else {
-            Item item = fuel.getItem();
+            var item = fuel.getItem();
             return AbstractFurnaceBlockEntity.createFuelTimeMap().getOrDefault(item, 0);
         }
     }

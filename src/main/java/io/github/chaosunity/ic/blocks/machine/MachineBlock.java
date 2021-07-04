@@ -1,6 +1,7 @@
-package io.github.chaosunity.ic.blocks;
+package io.github.chaosunity.ic.blocks.machine;
 
 import io.github.chaosunity.ic.api.variant.MachineVariant;
+import io.github.chaosunity.ic.blocks.IVariantBlock;
 import net.minecraft.block.BlockWithEntity;
 
 public abstract class MachineBlock extends BlockWithEntity implements IVariantBlock<MachineVariant> {

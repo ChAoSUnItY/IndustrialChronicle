@@ -4,11 +4,10 @@ import io.github.chaosunity.ic.api.fluid.FluidHelper;
 import io.github.chaosunity.ic.api.fluid.FluidStack;
 import io.github.chaosunity.ic.api.fluid.SidedFluidContainer;
 import io.github.chaosunity.ic.api.io.BlockEntityWithIO;
+import io.github.chaosunity.ic.api.variant.IOType;
 import io.github.chaosunity.ic.api.variant.MachineVariant;
 import io.github.chaosunity.ic.blockentity.IVariantBlockEntity;
 import io.github.chaosunity.ic.blockentity.ImplementedFluidContainer;
-import io.github.chaosunity.ic.blockentity.MachineBlockEntity;
-import io.github.chaosunity.ic.api.variant.IOType;
 import io.github.chaosunity.ic.blocks.machine.PumpBlock;
 import io.github.chaosunity.ic.registry.ICBlockEntities;
 import io.github.chaosunity.ic.registry.ICFluids;
@@ -18,6 +17,8 @@ import net.minecraft.block.FluidBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
@@ -108,8 +109,14 @@ public class PumpBlockEntity extends MachineBlockEntity<PumpBlockEntity, PumpBlo
                 pbe.getPumpedFluid().setFluid(fb.getFluidState(world.getBlockState(pos.offset(facing))).getFluid());
                 pbe.getStoredSteam().remove(pbe.getConsumeRate());
 
-                if (ThreadLocalRandom.current().nextInt(0, 10000) <= 1)
+                if (ThreadLocalRandom.current().nextInt(0, 10000) <= 1) {
+                    var d = pos.getX() + 0.5D;
+                    var e = pos.getY();
+                    var f = pos.getZ() + 0.5D;
+
                     world.setBlockState(pos.offset(facing), Blocks.AIR.getDefaultState());
+                    world.playSound(d, e, f, SoundEvents.BLOCK_BUBBLE_COLUMN_UPWARDS_INSIDE, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
+                }
             }
 
             if (pbe.getStoredSteam().isEmpty() || pbe.getPumpedFluid().isFull()) {

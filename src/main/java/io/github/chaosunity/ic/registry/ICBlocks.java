@@ -9,6 +9,7 @@ import io.github.chaosunity.ic.blocks.IVariantBlock;
 import io.github.chaosunity.ic.blocks.OreBlock;
 import io.github.chaosunity.ic.blocks.conduit.PipeBlock;
 import io.github.chaosunity.ic.blocks.machine.BoilerBlock;
+import io.github.chaosunity.ic.blocks.machine.IndustrialFurnaceBlock;
 import io.github.chaosunity.ic.blocks.machine.PumpBlock;
 import io.github.chaosunity.ic.utils.Utils;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -29,6 +30,7 @@ public final class ICBlocks {
 
     public static EnumMap<MachineVariant, PumpBlock> PUMPS;
     public static EnumMap<MachineVariant, BoilerBlock> BOILERS;
+    public static EnumMap<MachineVariant, IndustrialFurnaceBlock> INDUSTRIAL_FURNACES;
     public static EnumMap<ConduitVariant, PipeBlock> PIPES;
 
     public static void register() {
@@ -39,6 +41,7 @@ public final class ICBlocks {
 
         PUMPS = register(MachineVariant.class, PumpBlock.class, ICItemGroups.IC_ITEMGROUP_MECHANICAL, "pump");
         BOILERS = register(MachineVariant.class, BoilerBlock.class, ICItemGroups.IC_ITEMGROUP_MECHANICAL, "boiler");
+        INDUSTRIAL_FURNACES = register(MachineVariant.class, IndustrialFurnaceBlock.class, ICItemGroups.IC_ITEMGROUP_MECHANICAL, "industrial_furnace");
         PIPES = register(ConduitVariant.class, PipeBlock.class, ICItemGroups.IC_ITEMGROUP_MECHANICAL, "pipe");
     }
 

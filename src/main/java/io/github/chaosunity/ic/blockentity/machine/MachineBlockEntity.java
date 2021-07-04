@@ -1,6 +1,7 @@
-package io.github.chaosunity.ic.blockentity;
+package io.github.chaosunity.ic.blockentity.machine;
 
 import io.github.chaosunity.ic.api.variant.IOType;
+import io.github.chaosunity.ic.blockentity.IVariantBlockEntity;
 import io.github.chaosunity.ic.blocks.IVariantBlock;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.block.BlockState;

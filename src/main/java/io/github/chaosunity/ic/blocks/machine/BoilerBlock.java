@@ -2,7 +2,6 @@ package io.github.chaosunity.ic.blocks.machine;
 
 import io.github.chaosunity.ic.api.variant.MachineVariant;
 import io.github.chaosunity.ic.blockentity.machine.BoilerBlockEntity;
-import io.github.chaosunity.ic.blocks.HorizontalMachineBlock;
 import io.github.chaosunity.ic.registry.ICItems;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
