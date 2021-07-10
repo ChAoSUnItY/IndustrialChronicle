@@ -58,46 +58,6 @@ public class PumpBlockEntity extends MachineBlockEntity<PumpBlockEntity, PumpBlo
         super(ICBlockEntities.PUMP_BLOCK_ENTITIES.get(IVariantBlockEntity.<MachineVariant>getVariant(state)), pos, state);
     }
 
-    @Override
-    public void readNbt(NbtCompound nbt) {
-        super.readNbt(nbt);
-        FluidHelper.readNBT(nbt, fluids);
-        readIOMap(nbt, IOs);
-        working = nbt.getBoolean("Working");
-    }
-
-    @Override
-    public NbtCompound writeNbt(NbtCompound nbt) {
-        FluidHelper.writeNBT(nbt, fluids);
-        writeIOMap(nbt, IOs);
-        nbt.putBoolean("Working", working);
-        return super.writeNbt(nbt);
-    }
-
-    public FluidStack getPumpedFluid() {
-        return get(0);
-    }
-
-    public FluidStack getStoredSteam() {
-        return get(1);
-    }
-
-    public boolean isWorking() {
-        return working;
-    }
-
-    public int getPumpingRate() {
-        return PUMPING_RATE[getVariant(this).ordinal()];
-    }
-
-    public int getTransferRate() {
-        return TRANSFER_RATE[getVariant(this).ordinal()];
-    }
-
-    public int getConsumeRate() {
-        return CONSUME_RATE[getVariant(this).ordinal()];
-    }
-
     public static void tick(World world, BlockPos pos, BlockState state, BlockEntity be) {
         if (be instanceof PumpBlockEntity pbe) {
             var facing = state.get(Properties.FACING);
@@ -150,6 +110,46 @@ public class PumpBlockEntity extends MachineBlockEntity<PumpBlockEntity, PumpBlo
                 markDirty(world, pos, state);
             }
         }
+    }
+
+    @Override
+    public void readNbt(NbtCompound nbt) {
+        super.readNbt(nbt);
+        FluidHelper.readNBT(nbt, fluids);
+        readIOMap(nbt, IOs);
+        working = nbt.getBoolean("Working");
+    }
+
+    @Override
+    public NbtCompound writeNbt(NbtCompound nbt) {
+        FluidHelper.writeNBT(nbt, fluids);
+        writeIOMap(nbt, IOs);
+        nbt.putBoolean("Working", working);
+        return super.writeNbt(nbt);
+    }
+
+    public FluidStack getPumpedFluid() {
+        return get(0);
+    }
+
+    public FluidStack getStoredSteam() {
+        return get(1);
+    }
+
+    public boolean isWorking() {
+        return working;
+    }
+
+    public int getPumpingRate() {
+        return PUMPING_RATE[getVariant(this).ordinal()];
+    }
+
+    public int getTransferRate() {
+        return TRANSFER_RATE[getVariant(this).ordinal()];
+    }
+
+    public int getConsumeRate() {
+        return CONSUME_RATE[getVariant(this).ordinal()];
     }
 
     @Override

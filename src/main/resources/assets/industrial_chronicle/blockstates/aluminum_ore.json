@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": { "model": "industrial_chronicle:block/aluminum_ore" }
+    "": {
+      "model": "industrial_chronicle:block/aluminum_ore"
+    }
   }
 }

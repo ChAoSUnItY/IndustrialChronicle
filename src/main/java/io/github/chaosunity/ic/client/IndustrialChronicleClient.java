@@ -30,20 +30,6 @@ import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
 public class IndustrialChronicleClient implements ClientModInitializer {
-    @Override
-    public void onInitializeClient() {
-        ICScreens.register();
-        ICBlockEntityRenderers.register();
-
-        registerRenderTextures("block/io/fluid_input");
-        registerRenderTextures("block/io/fluid_output");
-        registerRenderTextures("block/io/item_output");
-        registerRenderTextures("block/io/item_input");
-
-        setupFluidRendering(ICFluids.STEAM, ICFluids.FLOWING_STEAM, new Identifier(IndustrialChronicle.MODID, "steam"), 0xFFFFFF);
-        BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), ICFluids.STEAM, ICFluids.FLOWING_STEAM);
-    }
-
     private static void registerRenderTextures(String path) {
         registerRenderTextures(new Identifier(IndustrialChronicle.MODID, path));
     }
@@ -92,5 +78,19 @@ public class IndustrialChronicleClient implements ClientModInitializer {
 
         FluidRenderHandlerRegistry.INSTANCE.register(still, renderHandler);
         FluidRenderHandlerRegistry.INSTANCE.register(flowing, renderHandler);
+    }
+
+    @Override
+    public void onInitializeClient() {
+        ICScreens.register();
+        ICBlockEntityRenderers.register();
+
+        registerRenderTextures("block/io/fluid_input");
+        registerRenderTextures("block/io/fluid_output");
+        registerRenderTextures("block/io/item_output");
+        registerRenderTextures("block/io/item_input");
+
+        setupFluidRendering(ICFluids.STEAM, ICFluids.FLOWING_STEAM, new Identifier(IndustrialChronicle.MODID, "steam"), 0xFFFFFF);
+        BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), ICFluids.STEAM, ICFluids.FLOWING_STEAM);
     }
 }

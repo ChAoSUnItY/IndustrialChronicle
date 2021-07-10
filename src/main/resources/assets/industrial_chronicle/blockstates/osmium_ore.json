@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": { "model": "industrial_chronicle:block/osmium_ore" }
+    "": {
+      "model": "industrial_chronicle:block/osmium_ore"
+    }
   }
 }

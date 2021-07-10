@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": { "model": "industrial_chronicle:block/iridium_ore" }
+    "": {
+      "model": "industrial_chronicle:block/iridium_ore"
+    }
   }
 }

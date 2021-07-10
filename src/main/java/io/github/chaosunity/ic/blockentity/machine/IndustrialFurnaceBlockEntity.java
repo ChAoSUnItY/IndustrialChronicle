@@ -1,5 +1,7 @@
 package io.github.chaosunity.ic.blockentity.machine;
 
+import io.github.chaosunity.ic.IndustrialChronicle;
+import io.github.chaosunity.ic.api.config.ICConfig;
 import io.github.chaosunity.ic.api.fluid.FluidHelper;
 import io.github.chaosunity.ic.api.fluid.FluidStack;
 import io.github.chaosunity.ic.api.io.BlockEntityWithIO;
@@ -13,15 +15,12 @@ import io.github.chaosunity.ic.client.screen.IndustrialFurnaceScreenHandler;
 import io.github.chaosunity.ic.registry.ICBlockEntities;
 import io.github.chaosunity.ic.registry.ICFluids;
 import io.github.chaosunity.ic.utils.RecipUtils;
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.minecraft.block.AbstractFurnaceBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
@@ -44,17 +43,11 @@ import java.util.Map;
 
 public class IndustrialFurnaceBlockEntity extends MachineBlockEntity<IndustrialFurnaceBlockEntity, IndustrialFurnaceBlock>
         implements ExtendedScreenHandlerFactory, ImplementedInventory, ImplementedFluidContainer, BlockEntityWithIO {
-    public static final int STEAM_CAPACITY = 10000;
-    public static final int[] CONSUME_RATE = new int[]{
-            10,
-            20
-    };
+    public static final ICConfig.VariantConfigSet<Long> STEAM_CAPACITY = IndustrialChronicle.config.industrialFurnaceConfig.steamCapacity;
+    public static final ICConfig.VariantConfigSet<Long> CONSUME_RATE = IndustrialChronicle.config.industrialFurnaceConfig.consumeRate;
 
     public final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(2, ItemStack.EMPTY);
-    public final DefaultedList<FluidStack> fluids = DefaultedList.copyOf(
-            FluidStack.EMPTY,
-            new FluidStack(ICFluids.STEAM, STEAM_CAPACITY)
-    );
+    public final DefaultedList<FluidStack> fluids;
 
     private final LinkedHashMap<Direction, IOType> IOs = createIOMap();
     private int cookTime;
@@ -65,37 +58,13 @@ public class IndustrialFurnaceBlockEntity extends MachineBlockEntity<IndustrialF
     public IndustrialFurnaceBlockEntity(BlockPos pos, BlockState state) {
         super(ICBlockEntities.INDUSTRIAL_FURNACE_BLOCK_ENTITIES.get(IVariantBlockEntity.<MachineVariant>getVariant(state)), pos, state);
         cookTimeTotal = 200;
-    }
 
-    @Override
-    public void readNbt(NbtCompound nbt) {
-        super.readNbt(nbt);
-        Inventories.readNbt(nbt, inventory);
-        FluidHelper.readNBT(nbt, fluids);
-        readIOMap(nbt, IOs);
-        cookTime = nbt.getInt("CookTime");
-        cookTimeTotal = nbt.getInt("CookTimeTotal");
-    }
+        var variant = IVariantBlockEntity.<MachineVariant>getVariant(state);
 
-    @Override
-    public NbtCompound writeNbt(NbtCompound nbt) {
-        super.writeNbt(nbt);
-        Inventories.writeNbt(nbt, inventory);
-        FluidHelper.writeNBT(nbt, fluids);
-        writeIOMap(nbt, IOs);
-        nbt.putInt("CookTime", cookTime);
-        nbt.putInt("CookTimeTotal", cookTimeTotal);
-        return nbt;
-    }
-
-    @Override
-    public void fromClientTag(NbtCompound tag) {
-        readNbt(tag);
-    }
-
-    @Override
-    public NbtCompound toClientTag(NbtCompound tag) {
-        return writeNbt(tag);
+        fluids = DefaultedList.copyOf(
+                FluidStack.EMPTY,
+                new FluidStack(ICFluids.STEAM, STEAM_CAPACITY.get(variant))
+        );
     }
 
     public static void tick(World world, BlockPos pos, BlockState state, BlockEntity blockEntity) {
@@ -131,6 +100,36 @@ public class IndustrialFurnaceBlockEntity extends MachineBlockEntity<IndustrialF
                     ifb.sync();
             }
         }
+    }
+
+    @Override
+    public void readNbt(NbtCompound nbt) {
+        super.readNbt(nbt);
+        Inventories.readNbt(nbt, inventory);
+        FluidHelper.readNBT(nbt, fluids);
+        readIOMap(nbt, IOs);
+        cookTime = nbt.getInt("CookTime");
+        cookTimeTotal = nbt.getInt("CookTimeTotal");
+    }
+
+    @Override
+    public NbtCompound writeNbt(NbtCompound nbt) {
+        Inventories.writeNbt(nbt, inventory);
+        FluidHelper.writeNBT(nbt, fluids);
+        writeIOMap(nbt, IOs);
+        nbt.putInt("CookTime", cookTime);
+        nbt.putInt("CookTimeTotal", cookTimeTotal);
+        return super.writeNbt(nbt);
+    }
+
+    @Override
+    public void fromClientTag(NbtCompound tag) {
+        readNbt(tag);
+    }
+
+    @Override
+    public NbtCompound toClientTag(NbtCompound tag) {
+        return writeNbt(tag);
     }
 
     private int getRecipeCookTime() {
@@ -226,8 +225,8 @@ public class IndustrialFurnaceBlockEntity extends MachineBlockEntity<IndustrialF
         return fluids.get(0);
     }
 
-    public int getConsumeRate() {
-        return CONSUME_RATE[getVariant(this).ordinal()];
+    public long getConsumeRate() {
+        return CONSUME_RATE.<MachineVariant>get(getVariant(this));
     }
 
     @Override

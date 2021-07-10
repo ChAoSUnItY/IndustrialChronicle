@@ -1,14 +1,16 @@
 package io.github.chaosunity.ic.blockentity.machine;
 
+import io.github.chaosunity.ic.IndustrialChronicle;
+import io.github.chaosunity.ic.api.config.ICConfig;
 import io.github.chaosunity.ic.api.fluid.FluidHelper;
 import io.github.chaosunity.ic.api.fluid.FluidStack;
 import io.github.chaosunity.ic.api.fluid.SidedFluidContainer;
 import io.github.chaosunity.ic.api.io.BlockEntityWithIO;
+import io.github.chaosunity.ic.api.variant.IOType;
 import io.github.chaosunity.ic.api.variant.MachineVariant;
 import io.github.chaosunity.ic.blockentity.IVariantBlockEntity;
 import io.github.chaosunity.ic.blockentity.ImplementedFluidContainer;
 import io.github.chaosunity.ic.blockentity.ImplementedInventory;
-import io.github.chaosunity.ic.api.variant.IOType;
 import io.github.chaosunity.ic.blocks.machine.BoilerBlock;
 import io.github.chaosunity.ic.client.screen.BoilerScreenHandler;
 import io.github.chaosunity.ic.registry.ICBlockEntities;
@@ -42,23 +44,13 @@ import java.util.Map;
 
 public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, BoilerBlock>
         implements ExtendedScreenHandlerFactory, ImplementedInventory, ImplementedFluidContainer, BlockEntityWithIO {
-    public static final int WATER_CAPACITY = 10000;
-    public static final int STEAM_CAPACITY = 10000;
-    public static final int[] TRANSFORM_RATE = new int[]{
-            20,
-            40
-    };
-    public static final int[] TRANSFER_RATE = new int[]{
-            40,
-            80
-    };
+    public static final ICConfig.VariantConfigSet<Long> WATER_CAPACITY = IndustrialChronicle.config.boilerConfig.waterCapacity;
+    public static final ICConfig.VariantConfigSet<Long> STEAM_CAPACITY = IndustrialChronicle.config.boilerConfig.steamCapacity;
+    public static final ICConfig.VariantConfigSet<Long> TRANSFORM_RATE = IndustrialChronicle.config.boilerConfig.transformRate;
+    public static final ICConfig.VariantConfigSet<Long> TRANSFER_RATE = IndustrialChronicle.config.boilerConfig.transferRate;
 
     public final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(1, ItemStack.EMPTY);
-    public final DefaultedList<FluidStack> fluids = DefaultedList.copyOf(
-            FluidStack.EMPTY,
-            new FluidStack(Fluids.WATER, WATER_CAPACITY),
-            new FluidStack(ICFluids.STEAM, STEAM_CAPACITY)
-    );
+    public final DefaultedList<FluidStack> fluids;
 
     private final LinkedHashMap<Direction, IOType> IOs = createIOMap();
     private int burnTime;
@@ -66,51 +58,14 @@ public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, Boi
 
     public BoilerBlockEntity(BlockPos pos, BlockState state) {
         super(ICBlockEntities.BOILER_BLOCK_ENTITIES.get(IVariantBlockEntity.<MachineVariant>getVariant(state)), pos, state);
-    }
 
-    @Override
-    public void readNbt(NbtCompound nbt) {
-        super.readNbt(nbt);
-        Inventories.readNbt(nbt, inventory);
-        FluidHelper.readNBT(nbt, fluids);
-        readIOMap(nbt, IOs);
-        burnTime = nbt.getInt("BurnTime");
-        fuelTime = nbt.getInt("FuelTime");
-    }
+        var variant = IVariantBlockEntity.<MachineVariant>getVariant(state);
 
-    @Override
-    public NbtCompound writeNbt(NbtCompound nbt) {
-        Inventories.writeNbt(nbt, inventory);
-        FluidHelper.writeNBT(nbt, fluids);
-        writeIOMap(nbt, IOs);
-        nbt.putInt("BurnTime", burnTime);
-        nbt.putInt("FuelTime", fuelTime);
-        return super.writeNbt(nbt);
-    }
-
-    @Override
-    public Map<Direction, IOType> getIOStatus() {
-        return IOs;
-    }
-
-    @Override
-    public void nextIOType(Direction dir) {
-        if (dir == getCachedState().get(Properties.HORIZONTAL_FACING))
-            throw new IllegalArgumentException("Cannot apply IO Type on machine's facing face.");
-
-        IOs.computeIfPresent(dir, (d, io) -> io.next(IOType.TransferType.ITEM, IOType.TransferType.FLUID));
-    }
-
-    public boolean isBurning() {
-        return burnTime > 0;
-    }
-
-    public int getTransformRate() {
-        return TRANSFORM_RATE[getVariant().ordinal()];
-    }
-
-    public int getTransferRate() {
-        return TRANSFER_RATE[getVariant().ordinal()];
+        fluids = DefaultedList.copyOf(
+                FluidStack.EMPTY,
+                new FluidStack(Fluids.WATER, WATER_CAPACITY.get(variant)),
+                new FluidStack(ICFluids.STEAM, STEAM_CAPACITY.get(variant))
+        );
     }
 
     public static void tick(World world, BlockPos pos, BlockState state, BlockEntity be) {
@@ -174,8 +129,49 @@ public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, Boi
         }
     }
 
-    public MachineVariant getVariant() {
-        return getVariant(this);
+    @Override
+    public void readNbt(NbtCompound nbt) {
+        super.readNbt(nbt);
+        Inventories.readNbt(nbt, inventory);
+        FluidHelper.readNBT(nbt, fluids);
+        readIOMap(nbt, IOs);
+        burnTime = nbt.getInt("BurnTime");
+        fuelTime = nbt.getInt("FuelTime");
+    }
+
+    @Override
+    public NbtCompound writeNbt(NbtCompound nbt) {
+        Inventories.writeNbt(nbt, inventory);
+        FluidHelper.writeNBT(nbt, fluids);
+        writeIOMap(nbt, IOs);
+        nbt.putInt("BurnTime", burnTime);
+        nbt.putInt("FuelTime", fuelTime);
+        return super.writeNbt(nbt);
+    }
+
+    @Override
+    public Map<Direction, IOType> getIOStatus() {
+        return IOs;
+    }
+
+    @Override
+    public void nextIOType(Direction dir) {
+        if (dir == getCachedState().get(Properties.HORIZONTAL_FACING))
+            throw new IllegalArgumentException("Cannot apply IO Type on machine's facing face.");
+
+        IOs.computeIfPresent(dir, (d, io) -> io.next(IOType.TransferType.ITEM, IOType.TransferType.FLUID));
+    }
+
+    public boolean isBurning() {
+        return burnTime > 0;
+    }
+
+    public long getTransformRate() {
+        return TRANSFORM_RATE.<MachineVariant>get(getVariant(this));
+    }
+
+    public long getTransferRate() {
+        return TRANSFER_RATE.<MachineVariant>get(getVariant(this));
     }
 
     protected int getFuelTime(ItemStack fuel) {

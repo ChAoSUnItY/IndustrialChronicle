@@ -14,8 +14,8 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 
 public class BoilerScreenHandler extends ScreenHandler {
-    private BoilerBlockEntity bbe;
     private final Inventory inventory;
+    private BoilerBlockEntity bbe;
 
     public BoilerScreenHandler(int syncId, PlayerInventory playerInventory, PacketByteBuf buf) {
         this(syncId, playerInventory, new SimpleInventory(1));
@@ -42,7 +42,7 @@ public class BoilerScreenHandler extends ScreenHandler {
     }
 
     public MachineVariant getVariant() {
-        return bbe.getVariant();
+        return bbe.getVariant(bbe);
     }
 
     public long getWaterCapacity() {
@@ -50,7 +50,7 @@ public class BoilerScreenHandler extends ScreenHandler {
     }
 
     public double getWaterPercentage() {
-        return getWaterCapacity() * 1.0 / BoilerBlockEntity.WATER_CAPACITY;
+        return getWaterCapacity() * 1.0 / BoilerBlockEntity.WATER_CAPACITY.get(getVariant());
     }
 
     public long getSteamCapacity() {
@@ -58,7 +58,7 @@ public class BoilerScreenHandler extends ScreenHandler {
     }
 
     public double getSteamPercentage() {
-        return getSteamCapacity() * 1.0 / BoilerBlockEntity.STEAM_CAPACITY;
+        return getSteamCapacity() * 1.0 / BoilerBlockEntity.STEAM_CAPACITY.get(getVariant());
     }
 
     public int getBurningTime() {

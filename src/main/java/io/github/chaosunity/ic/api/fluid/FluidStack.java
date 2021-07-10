@@ -5,10 +5,9 @@ import net.minecraft.fluid.Fluids;
 
 public class FluidStack {
     public static final FluidStack EMPTY = new FluidStack(Fluids.EMPTY, 0, 0);
-
-    private Fluid fluid;
     public final long capacity;
     public long mB;
+    private Fluid fluid;
 
     public FluidStack(Fluid fluid, long capacity) {
         this(fluid, capacity, 0);

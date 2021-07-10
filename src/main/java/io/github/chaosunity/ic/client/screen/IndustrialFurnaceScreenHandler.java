@@ -1,7 +1,6 @@
 package io.github.chaosunity.ic.client.screen;
 
 import io.github.chaosunity.ic.api.variant.MachineVariant;
-import io.github.chaosunity.ic.blockentity.machine.BoilerBlockEntity;
 import io.github.chaosunity.ic.blockentity.machine.IndustrialFurnaceBlockEntity;
 import io.github.chaosunity.ic.registry.ICScreens;
 import net.minecraft.entity.player.PlayerEntity;
@@ -14,8 +13,8 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 
 public class IndustrialFurnaceScreenHandler extends ScreenHandler {
-    private IndustrialFurnaceBlockEntity ifb;
     private final Inventory inventory;
+    private IndustrialFurnaceBlockEntity ifb;
 
     public IndustrialFurnaceScreenHandler(int syncId, PlayerInventory playerInventory, PacketByteBuf buf) {
         this(syncId, playerInventory, new SimpleInventory(2));
@@ -51,7 +50,7 @@ public class IndustrialFurnaceScreenHandler extends ScreenHandler {
     }
 
     public double getSteamPercentage() {
-        return getSteamCapacity() * 1.0 / IndustrialFurnaceBlockEntity.STEAM_CAPACITY;
+        return getSteamCapacity() * 1.0 / IndustrialFurnaceBlockEntity.STEAM_CAPACITY.get(getVariant());
     }
 
     public boolean isBurning() {

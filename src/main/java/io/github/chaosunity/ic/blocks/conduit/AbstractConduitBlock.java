@@ -40,7 +40,7 @@ public abstract class AbstractConduitBlock extends BlockWithEntity implements Wa
         map.put(Direction.UP, UP);
         map.put(Direction.DOWN, DOWN);
     });
-
+    public final ConduitVariant variant;
     private final Map<BlockState, VoxelShape> SHAPES = Util.make(new HashMap<>(), map -> stateManager.getStates().forEach(state -> {
         var size = 10.0;
         var baseShape = Block.createCuboidShape(16.0D - size, 16.0D - size, 16.0D - size, size, size, size);
@@ -59,7 +59,6 @@ public abstract class AbstractConduitBlock extends BlockWithEntity implements Wa
 
         map.put(state, VoxelShapes.union(baseShape, connections.toArray(VoxelShape[]::new)));
     }));
-    public final ConduitVariant variant;
 
     protected AbstractConduitBlock(ConduitVariant variant, Settings settings) {
         super(settings);

@@ -2,10 +2,10 @@ package io.github.chaosunity.ic.blockentity.renderer;
 
 import io.github.chaosunity.ic.IndustrialChronicle;
 import io.github.chaosunity.ic.api.io.BlockEntityWithIO;
+import io.github.chaosunity.ic.api.variant.IOType;
 import io.github.chaosunity.ic.blockentity.machine.MachineBlockEntity;
 import io.github.chaosunity.ic.blocks.machine.FacingMachineBlock;
 import io.github.chaosunity.ic.blocks.machine.HorizontalMachineBlock;
-import io.github.chaosunity.ic.api.variant.IOType;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;

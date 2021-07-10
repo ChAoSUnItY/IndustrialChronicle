@@ -1,5 +1,7 @@
 package io.github.chaosunity.ic.blockentity.conduit;
 
+import io.github.chaosunity.ic.IndustrialChronicle;
+import io.github.chaosunity.ic.api.config.ICConfig;
 import io.github.chaosunity.ic.api.fluid.FluidHelper;
 import io.github.chaosunity.ic.api.fluid.FluidStack;
 import io.github.chaosunity.ic.api.fluid.SidedFluidContainer;
@@ -20,33 +22,13 @@ import net.minecraft.world.World;
 import java.util.Collections;
 
 public class PipeBlockEntity extends ConduitBlockEntity<PipeBlockEntity, PipeBlock> implements ImplementedFluidContainer {
-    public static final int[] HOLDING_CAPACITY = new int[]{
-            1000,
-            3000,
-            5000
-    };
-    public static final int[] TRANSFER_RATE = new int[]{
-            10,
-            20,
-            40
-    };
+    public static final ICConfig.VariantConfigSet<Long> HOLDING_CAPACITY = IndustrialChronicle.config.pipeTransferRate.holdingCapacity;
+    public static final ICConfig.VariantConfigSet<Long> TRANSFER_RATE = IndustrialChronicle.config.pipeTransferRate.transferRate;
 
     public final DefaultedList<FluidStack> fluids = DefaultedList.ofSize(1, new FluidStack(Fluids.EMPTY, getHoldingCapacity()));
 
     public PipeBlockEntity(BlockPos pos, BlockState state) {
         super(ICBlockEntities.PIPE_BLOCK_ENTITIES.get(IVariantBlockEntity.<ConduitVariant>getVariant(state)), pos, state);
-    }
-
-    @Override
-    public void readNbt(NbtCompound nbt) {
-        super.readNbt(nbt);
-        FluidHelper.readNBT(nbt, fluids);
-    }
-
-    @Override
-    public NbtCompound writeNbt(NbtCompound nbt) {
-        FluidHelper.writeNBT(nbt, fluids);
-        return super.writeNbt(nbt);
     }
 
     public static void tick(World world, BlockPos pos, BlockState state, BlockEntity be) {
@@ -84,16 +66,28 @@ public class PipeBlockEntity extends ConduitBlockEntity<PipeBlockEntity, PipeBlo
         }
     }
 
+    @Override
+    public void readNbt(NbtCompound nbt) {
+        super.readNbt(nbt);
+        FluidHelper.readNBT(nbt, fluids);
+    }
+
+    @Override
+    public NbtCompound writeNbt(NbtCompound nbt) {
+        FluidHelper.writeNBT(nbt, fluids);
+        return super.writeNbt(nbt);
+    }
+
     public FluidStack getFluid() {
         return get(0);
     }
 
     public long getTransferRate() {
-        return TRANSFER_RATE[getVariant(this).ordinal()];
+        return TRANSFER_RATE.<ConduitVariant>get(getVariant(this));
     }
 
     public long getHoldingCapacity() {
-        return HOLDING_CAPACITY[getVariant(this).ordinal()];
+        return HOLDING_CAPACITY.<ConduitVariant>get(getVariant(this));
     }
 
     @Override
@@ -159,6 +153,8 @@ public class PipeBlockEntity extends ConduitBlockEntity<PipeBlockEntity, PipeBlo
 
     @Override
     public boolean canInsertFluid(int index, FluidStack stack, Direction direction) {
+        if (world == null) return false;
+
         var basicCondition = (getFluid().getFluid().matchesType(Fluids.EMPTY) || getFluid().getFluid().matchesType(stack.getFluid())) && !getFluid().isFull();
         var be = world.getBlockEntity(pos.offset(direction));
 
