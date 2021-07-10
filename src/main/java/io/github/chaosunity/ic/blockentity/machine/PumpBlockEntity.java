@@ -8,6 +8,8 @@ import io.github.chaosunity.ic.api.variant.IOType;
 import io.github.chaosunity.ic.api.variant.MachineVariant;
 import io.github.chaosunity.ic.blockentity.IVariantBlockEntity;
 import io.github.chaosunity.ic.blockentity.ImplementedFluidContainer;
+import io.github.chaosunity.ic.blockentity.conduit.PipeBlockEntity;
+import io.github.chaosunity.ic.blocks.conduit.PipeBlock;
 import io.github.chaosunity.ic.blocks.machine.PumpBlock;
 import io.github.chaosunity.ic.registry.ICBlockEntities;
 import io.github.chaosunity.ic.registry.ICFluids;
@@ -63,19 +65,39 @@ public class PumpBlockEntity extends MachineBlockEntity<PumpBlockEntity, PumpBlo
             var facing = state.get(Properties.FACING);
             var changed = false;
 
-            if (!pbe.getStoredSteam().isEmpty() && !pbe.getPumpedFluid().isFull() && world.getBlockState(pos.offset(facing)).getBlock() instanceof FluidBlock fb) {
-                changed = true;
-                pbe.getPumpedFluid().add(pbe.getPumpingRate());
-                pbe.getPumpedFluid().setFluid(fb.getFluidState(world.getBlockState(pos.offset(facing))).getFluid());
-                pbe.getStoredSteam().remove(pbe.getConsumeRate());
+            if (!pbe.getStoredSteam().isEmpty() && !pbe.getPumpedFluid().isFull()) {
+                if (world.getBlockState(pos.offset(facing)).getBlock() instanceof FluidBlock fb) {
+                    changed = true;
+                    pbe.getPumpedFluid().add(pbe.getPumpingRate());
+                    pbe.getPumpedFluid().setFluid(fb.getFluidState(world.getBlockState(pos.offset(facing))).getFluid());
+                    pbe.getStoredSteam().remove(pbe.getConsumeRate());
 
-                if (ThreadLocalRandom.current().nextInt(0, 10000) <= 1) {
-                    var d = pos.getX() + 0.5D;
-                    var e = pos.getY();
-                    var f = pos.getZ() + 0.5D;
+                    if (ThreadLocalRandom.current().nextInt(0, 10000) <= 1) {
+                        var d = pos.getX() + 0.5D;
+                        var e = pos.getY();
+                        var f = pos.getZ() + 0.5D;
 
-                    world.setBlockState(pos.offset(facing), Blocks.AIR.getDefaultState());
-                    world.playSound(d, e, f, SoundEvents.BLOCK_BUBBLE_COLUMN_UPWARDS_INSIDE, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
+                        world.setBlockState(pos.offset(facing), Blocks.AIR.getDefaultState());
+                        world.playSound(d, e, f, SoundEvents.BLOCK_BUBBLE_COLUMN_UPWARDS_INSIDE, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
+                    }
+                } else if (world.getBlockState(pos.offset(facing)).getBlock() instanceof PipeBlock) {
+                    var be2 = world.getBlockEntity(pos.offset(facing));
+
+                    if (be2 instanceof PipeBlockEntity pbe2) {
+                        changed = true;
+                        pbe2.getFluid().transfer(pbe.getPumpedFluid(), pbe.getPumpingRate(), true);
+                        pbe.getPumpedFluid().setFluid(pbe2.getFluid().getFluid());
+                        pbe.getStoredSteam().remove(pbe.getConsumeRate());
+                    }
+                } else if (world.getBlockState(pos.offset(facing)).getBlock() instanceof PumpBlock) {
+                    var be2 = world.getBlockEntity(pos.offset(facing));
+
+                    if (be2 instanceof PumpBlockEntity pbe2 && pbe2.getIOStatus().get(facing.getOpposite()) == IOType.FLUID_OUTPUT) {
+                        changed = true;
+                        pbe2.getPumpedFluid().transfer(pbe.getPumpedFluid(), pbe.getPumpingRate(), true);
+                        pbe.getPumpedFluid().setFluid(pbe2.getPumpedFluid().getFluid());
+                        pbe.getStoredSteam().remove(pbe.getConsumeRate());
+                    }
                 }
             }
 

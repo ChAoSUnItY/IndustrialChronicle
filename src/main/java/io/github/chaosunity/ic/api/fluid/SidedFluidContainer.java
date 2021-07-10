@@ -1,6 +1,8 @@
 package io.github.chaosunity.ic.api.fluid;
 
+import io.github.chaosunity.ic.registry.ICFluids;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -23,6 +25,8 @@ public interface SidedFluidContainer extends FluidContainer {
 
         if (be instanceof SidedFluidContainer fc)
             for (var dir : Direction.values()) {
+                if (fluid.getFluid() != ICFluids.STEAM && dir == Direction.UP) continue;
+
                 var canExtract = false;
 
                 for (var i = 0; i < fc.containerSize(); i++)
