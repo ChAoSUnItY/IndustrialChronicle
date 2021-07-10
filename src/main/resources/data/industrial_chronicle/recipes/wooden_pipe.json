@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ccc",
+    "aba",
+    "ccc"
+  ],
+  "key": {
+    "c": {
+      "tag": "minecraft:planks"
+    },
+    "b": {
+      "item": "minecraft:bucket"
+    },
+    "a": {
+      "item": "minecraft:glass"
+    }
+  },
+  "result": {
+    "item": "industrial_chronicle:wooden_pipe",
+    "count": 8
+  }
+}

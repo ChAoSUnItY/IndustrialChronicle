@@ -73,6 +73,8 @@ public class PumpBlockEntity extends MachineBlockEntity<PumpBlockEntity, PumpBlo
     }
 
     public static void tick(World world, BlockPos pos, BlockState state, BlockEntity be) {
+        if (world.isClient) return;
+
         if (be instanceof PumpBlockEntity pbe) {
             var facing = state.get(Properties.FACING);
             var changed = false;

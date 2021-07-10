@@ -81,6 +81,8 @@ public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, Boi
     }
 
     public static void tick(World world, BlockPos pos, BlockState state, BlockEntity be) {
+        if (world.isClient) return;
+
         if (be instanceof BoilerBlockEntity bbe) {
             var bl = bbe.isBurning();
             var changed = false;

@@ -22,16 +22,20 @@ import io.github.chaosunity.ic.blockentity.IVariantBlockEntity;
 import io.github.chaosunity.ic.blockentity.ImplementedFluidContainer;
 import io.github.chaosunity.ic.blocks.conduit.PipeBlock;
 import io.github.chaosunity.ic.registry.ICBlockEntities;
+import io.github.chaosunity.ic.registry.ICFluids;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class PipeBlockEntity extends ConduitBlockEntity<PipeBlockEntity, PipeBlock> implements ImplementedFluidContainer {
     public static final ICConfig.VariantConfigSet<Long> HOLDING_CAPACITY = IndustrialChronicle.config.pipeTransferRate.holdingCapacity;
@@ -44,6 +48,8 @@ public class PipeBlockEntity extends ConduitBlockEntity<PipeBlockEntity, PipeBlo
     }
 
     public static void tick(World world, BlockPos pos, BlockState state, BlockEntity be) {
+        if (world.isClient) return;
+
         if (be instanceof PipeBlockEntity pbe) {
             var changed = false;
 
@@ -70,6 +76,15 @@ public class PipeBlockEntity extends ConduitBlockEntity<PipeBlockEntity, PipeBlo
                         be2.update(pbe.getFluid());
                     });
                 }
+            }
+
+            if (pbe.<ConduitVariant>getVariant(pbe) == ConduitVariant.WOODEN &&
+                    (pbe.getFluid().getFluid() == ICFluids.STEAM || pbe.getFluid().getFluid() == Fluids.LAVA) &&
+                    ThreadLocalRandom.current().nextInt(0, 1000000) <= 1) {
+                world.breakBlock(pos, false);
+                world.playSound(null, pos, SoundEvents.ENTITY_FIREWORK_ROCKET_BLAST, SoundCategory.AMBIENT, 1.0F, 1.0F);
+
+                return;
             }
 
             if (changed) {

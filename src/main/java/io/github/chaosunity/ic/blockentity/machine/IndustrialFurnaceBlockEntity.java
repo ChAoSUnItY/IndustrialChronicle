@@ -80,6 +80,8 @@ public class IndustrialFurnaceBlockEntity extends MachineBlockEntity<IndustrialF
     }
 
     public static void tick(World world, BlockPos pos, BlockState state, BlockEntity blockEntity) {
+        if (world.isClient) return;
+
         if (blockEntity instanceof IndustrialFurnaceBlockEntity ifb) {
             var changed = false;
 

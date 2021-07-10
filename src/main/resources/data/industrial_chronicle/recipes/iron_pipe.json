@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ccc",
+    "aba",
+    "ccc"
+  ],
+  "key": {
+    "c": {
+      "item": "minecraft:iron_ingot"
+    },
+    "b": {
+      "item": "minecraft:bucket"
+    },
+    "a": {
+      "item": "minecraft:glass"
+    }
+  },
+  "result": {
+    "item": "industrial_chronicle:iron_pipe",
+    "count": 8
+  }
+}

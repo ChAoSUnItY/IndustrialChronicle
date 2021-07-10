@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ccc",
+    "cBc",
+    "cDc"
+  ],
+  "key": {
+    "c": {
+      "item": "minecraft:copper_ingot"
+    },
+    "B": {
+      "item": "minecraft:blast_furnace"
+    },
+    "D": {
+      "item": "minecraft:cauldron"
+    }
+  },
+  "result": {
+    "item": "industrial_chronicle:copper_industrial_furnace",
+    "count": 1
+  }
+}

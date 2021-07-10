@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "c c",
+    " c ",
+    " c "
+  ],
+  "key": {
+    "c": {
+      "tag": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "industrial_chronicle:wrench",
+    "count": 8
+  }
+}
