@@ -34,16 +34,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Random;
 
 public class BoilerBlock extends HorizontalMachineBlock {
-    public static final BooleanProperty LIT = Properties.LIT;
-
     public BoilerBlock(MachineVariant variant) {
         super(FabricBlockSettings.of(Material.METAL)
                 .strength(3.0F)
                 .requiresTool()
                 .breakByTool(FabricToolTags.PICKAXES, variant.getRequiredToolLevel())
-                .luminance(s -> s.get(LIT) ? 13 : 0), variant);
+                .luminance(s -> s.get(Properties.LIT) ? 13 : 0), variant);
 
-        setDefaultState(getStateManager().getDefaultState().with(LIT, false));
+        setDefaultState(getStateManager().getDefaultState().with(Properties.LIT, false));
     }
 
     @Override
@@ -106,7 +104,7 @@ public class BoilerBlock extends HorizontalMachineBlock {
 
     @Override
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-        if (state.get(LIT)) {
+        if (state.get(Properties.LIT)) {
             var d = pos.getX() + 0.5D;
             var e = pos.getY();
             var f = pos.getZ() + 0.5D;
@@ -129,7 +127,7 @@ public class BoilerBlock extends HorizontalMachineBlock {
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder.add(LIT));
+        super.appendProperties(builder.add(Properties.LIT));
     }
 
     @Nullable

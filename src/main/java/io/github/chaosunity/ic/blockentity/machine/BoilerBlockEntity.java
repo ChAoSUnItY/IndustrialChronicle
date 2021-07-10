@@ -145,7 +145,7 @@ public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, Boi
 
             if (bl != bbe.isBurning()) {
                 changed = true;
-                state = state.with(BoilerBlock.LIT, bbe.isBurning());
+                state = state.with(Properties.LIT, bbe.isBurning());
                 world.setBlockState(pos, state, 3);
             }
 

@@ -9,12 +9,14 @@ import io.github.chaosunity.ic.blockentity.IVariantBlockEntity;
 import io.github.chaosunity.ic.blockentity.ImplementedFluidContainer;
 import io.github.chaosunity.ic.blockentity.ImplementedInventory;
 import io.github.chaosunity.ic.blocks.machine.IndustrialFurnaceBlock;
+import io.github.chaosunity.ic.client.screen.IndustrialFurnaceScreenHandler;
 import io.github.chaosunity.ic.registry.ICBlockEntities;
 import io.github.chaosunity.ic.registry.ICFluids;
+import io.github.chaosunity.ic.utils.RecipUtils;
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.AbstractFurnaceBlock;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -58,8 +60,11 @@ public class IndustrialFurnaceBlockEntity extends MachineBlockEntity<IndustrialF
     private int cookTime;
     private int cookTimeTotal;
 
+    private Recipe<?> lastRecipe;
+
     public IndustrialFurnaceBlockEntity(BlockPos pos, BlockState state) {
         super(ICBlockEntities.INDUSTRIAL_FURNACE_BLOCK_ENTITIES.get(IVariantBlockEntity.<MachineVariant>getVariant(state)), pos, state);
+        cookTimeTotal = 200;
     }
 
     @Override
@@ -74,12 +79,13 @@ public class IndustrialFurnaceBlockEntity extends MachineBlockEntity<IndustrialF
 
     @Override
     public NbtCompound writeNbt(NbtCompound nbt) {
+        super.writeNbt(nbt);
         Inventories.writeNbt(nbt, inventory);
         FluidHelper.writeNBT(nbt, fluids);
         writeIOMap(nbt, IOs);
-        nbt.putInt("CookTime", (short) this.cookTime);
-        nbt.putInt("CookTimeTotal", (short) this.cookTimeTotal);
-        return super.writeNbt(nbt);
+        nbt.putInt("CookTime", cookTime);
+        nbt.putInt("CookTimeTotal", cookTimeTotal);
+        return nbt;
     }
 
     @Override
@@ -94,85 +100,102 @@ public class IndustrialFurnaceBlockEntity extends MachineBlockEntity<IndustrialF
 
     public static void tick(World world, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         if (blockEntity instanceof IndustrialFurnaceBlockEntity ifb) {
-            var bl = ifb.isBurning();
             var changed = false;
 
-            if (ifb.isBurning())
+            if (ifb.canSmelt()) {
                 ifb.getSteam().remove(ifb.getConsumeRate());
+                ++ifb.cookTime;
 
-            if (!ifb.isBurning() && !ifb.getSteam().isEmpty()) {
                 changed = true;
-            } else {
-                var recipe = world.getRecipeManager().getFirstMatch(RecipeType.SMELTING, ifb, world).orElse(null);
-                var i = ifb.getMaxCountPerStack();
 
-                if (!ifb.isBurning() && canAcceptRecipeOutput(recipe, ifb.inventory, i)) {
-                    if (ifb.isBurning()) {
-                        changed = true;
-                    }
-                }
-
-                if (ifb.isBurning() && canAcceptRecipeOutput(recipe, ifb.inventory, i)) {
-                    ++ifb.cookTime;
-
-                    if (ifb.cookTime == ifb.cookTimeTotal) {
-                        ifb.cookTime = 0;
-                        ifb.cookTimeTotal = getCookTime(world, RecipeType.SMELTING, ifb);
-                        craftRecipe(recipe, ifb.inventory, i);
-                        changed = true;
-                    }
-                } else {
+                if (ifb.cookTime == ifb.cookTimeTotal) {
                     ifb.cookTime = 0;
+
+                    ifb.craftRecipe();
                 }
+            } else if (!ifb.canSmelt()) {
+                ifb.cookTime = 0;
+                changed = true;
             }
 
-            if (bl != ifb.isBurning()) {
+            if (state.get(Properties.LIT) != ifb.isBurning()) {
                 changed = true;
-                state = state.with(AbstractFurnaceBlock.LIT, ifb.isBurning());
+                state = state.with(Properties.LIT, ifb.isBurning());
                 world.setBlockState(pos, state, 3);
             }
 
             if (changed) {
                 markDirty(world, pos, state);
+
+                if (!world.isClient)
+                    ifb.sync();
             }
         }
     }
 
-    private static int getCookTime(World world, RecipeType<? extends AbstractCookingRecipe> recipeType, Inventory inventory) {
-        return world.getRecipeManager().getFirstMatch(recipeType, inventory, world).map(AbstractCookingRecipe::getCookTime).orElse(200);
+    private int getRecipeCookTime() {
+        if (world == null) return 0;
+
+        return world.getRecipeManager().getFirstMatch(RecipeType.SMELTING, this, world).map(AbstractCookingRecipe::getCookTime).orElse(200);
     }
 
-    private static boolean canAcceptRecipeOutput(@Nullable Recipe<?> recipe, DefaultedList<ItemStack> slots, int count) {
-        if (!slots.get(0).isEmpty() && recipe != null) {
-            var itemStack = recipe.getOutput();
+    private boolean canSmelt() {
+        if (world == null) return false;
 
-            if (itemStack.isEmpty()) {
-                return false;
-            } else {
-                var itemStack2 = (ItemStack)slots.get(2);
+        var input = getStack(0);
 
-                if (itemStack2.isEmpty()) {
-                    return true;
-                } else if (!itemStack2.isItemEqualIgnoreDamage(itemStack)) {
-                    return false;
-                } else if (itemStack2.getCount() < count && itemStack2.getCount() < itemStack2.getMaxCount()) {
-                    return true;
-                } else {
-                    return itemStack2.getCount() < itemStack.getMaxCount();
-                }
-            }
+        if (input.isEmpty()) return false;
+
+        var result = world.getRecipeManager().getFirstMatch(RecipeType.SMELTING, this, world).orElse(null);
+
+        if (result == null || result.getOutput().isEmpty()) return false;
+
+        var output = getStack(1);
+
+        if (output.isEmpty()) return true;
+
+        if (!output.isItemEqualIgnoreDamage(result.getOutput())) return false;
+
+        var resultCount = result.getOutput().getCount() + output.getCount();
+
+        return resultCount <= getMaxCountPerStack() && resultCount <= result.getOutput().getMaxCount();
+    }
+
+    private void craftRecipe() {
+        if (!canSmelt()) return;
+
+        var input = getStack(0);
+        var output = getStack(1);
+        var result = getResultStack(input);
+
+        if (output.isEmpty()) {
+            inventory.set(1, result.copy());
+        } else if (output.isItemEqualIgnoreDamage(result)) {
+            inventory.get(1).increment(1);
+        }
+
+        if (input.getCount() > 1) {
+            inventory.get(0).decrement(1);
         } else {
-            return false;
+            inventory.set(0, ItemStack.EMPTY);
         }
     }
 
-    private static void craftRecipe(@Nullable Recipe<?> recipe, DefaultedList<ItemStack> slots, int count) {
-        if (recipe != null && canAcceptRecipeOutput(recipe, slots, count)) {
-            var itemStack = slots.get(0);
-            slots.set(2, recipe.getOutput());
+    private ItemStack getResultStack(ItemStack stack) {
+        if (stack.isEmpty() || world == null) return ItemStack.EMPTY;
 
-            itemStack.decrement(1);
+        if (lastRecipe != null && RecipUtils.matchesSingleInput(lastRecipe, stack))
+            return lastRecipe.getOutput();
+
+        var recipe = world.getRecipeManager().getFirstMatch(RecipeType.SMELTING, this, world).orElse(null);
+
+        if (recipe != null) {
+            lastRecipe = recipe;
+
+            return recipe.getOutput().copy();
         }
+
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -196,7 +219,7 @@ public class IndustrialFurnaceBlockEntity extends MachineBlockEntity<IndustrialF
 
     @Override
     public boolean canInsertFluid(int index, FluidStack stack, Direction direction) {
-        return IOs.get(direction) == IOType.FLUID_INPUT && index == 1;
+        return IOs.get(direction) == IOType.FLUID_INPUT && index == 0;
     }
 
     public FluidStack getSteam() {
@@ -214,7 +237,7 @@ public class IndustrialFurnaceBlockEntity extends MachineBlockEntity<IndustrialF
 
     @Override
     public void nextIOType(Direction dir) {
-        if (dir == getCachedState().get(Properties.FACING))
+        if (dir == getCachedState().get(Properties.HORIZONTAL_FACING))
             throw new IllegalArgumentException("Cannot apply IO Type on machine's facing face.");
 
         IOs.computeIfPresent(dir, (d, io) -> io.next(IOType.TransferType.FLUID, IOType.TransferType.ITEM));
@@ -222,7 +245,7 @@ public class IndustrialFurnaceBlockEntity extends MachineBlockEntity<IndustrialF
 
     @Override
     public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
-
+        buf.writeBlockPos(pos);
     }
 
     @Override
@@ -241,16 +264,17 @@ public class IndustrialFurnaceBlockEntity extends MachineBlockEntity<IndustrialF
     }
 
     public boolean isBurning() {
-        return !getSteam().isEmpty();
+        if (world == null) return false;
+
+        return !getSteam().isEmpty() && canSmelt();
     }
 
-    protected int getFuelTime(ItemStack fuel) {
-        if (fuel.isEmpty()) {
-            return 0;
-        } else {
-            var item = fuel.getItem();
-            return AbstractFurnaceBlockEntity.createFuelTimeMap().getOrDefault(item, 0);
-        }
+    public int getCookTime() {
+        return cookTime;
+    }
+
+    public int getCookTimeTotal() {
+        return cookTimeTotal;
     }
 
     @Override
@@ -261,6 +285,6 @@ public class IndustrialFurnaceBlockEntity extends MachineBlockEntity<IndustrialF
     @Nullable
     @Override
     public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
-        return null;
+        return new IndustrialFurnaceScreenHandler(syncId, inv, this);
     }
 }

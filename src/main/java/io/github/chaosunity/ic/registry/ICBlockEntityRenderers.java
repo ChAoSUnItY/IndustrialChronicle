@@ -14,6 +14,7 @@ public final class ICBlockEntityRenderers {
     public static void register() {
         register(ICBlockEntities.PUMP_BLOCK_ENTITIES, IOBlockEntityRenderer::new);
         register(ICBlockEntities.BOILER_BLOCK_ENTITIES, IOBlockEntityRenderer::new);
+        register(ICBlockEntities.INDUSTRIAL_FURNACE_BLOCK_ENTITIES, IOBlockEntityRenderer::new);
         register(ICBlockEntities.PIPE_BLOCK_ENTITIES, PipeBlockEntityRenderer::new);
     }
 
