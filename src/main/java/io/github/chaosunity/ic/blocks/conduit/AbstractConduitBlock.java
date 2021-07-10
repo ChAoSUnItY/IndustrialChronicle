@@ -126,6 +126,11 @@ public abstract class AbstractConduitBlock extends BlockWithEntity implements Wa
         return SHAPES.get(state);
     }
 
+    @Override
+    public VoxelShape getRaycastShape(BlockState state, BlockView world, BlockPos pos) {
+        return SHAPES.get(state);
+    }
+
     @SuppressWarnings("deprecation")
     @Override
     public BlockState getStateForNeighborUpdate(BlockState ourState, Direction ourFacing, BlockState otherState,

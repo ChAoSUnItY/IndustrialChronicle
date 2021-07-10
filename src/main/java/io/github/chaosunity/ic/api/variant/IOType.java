@@ -1,5 +1,6 @@
 package io.github.chaosunity.ic.api.variant;
 
+import net.minecraft.util.Formatting;
 import net.minecraft.util.StringIdentifiable;
 
 import java.util.Arrays;
@@ -7,8 +8,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public enum IOType implements StringIdentifiable {
-    NONE("none"), ITEM_INPUT("item_input"), ITEM_OUTPUT("item_output"), FLUID_INPUT("item_input"),
-    FLUID_OUTPUT("item_output"), ENERGY_INPUT("item_input"), ENERGY_OUTPUT("item_output");
+    NONE("none"), ITEM_INPUT("item_input"), ITEM_OUTPUT("item_output"), FLUID_INPUT("fluid_input"),
+    FLUID_OUTPUT("fluid_output"), ENERGY_INPUT("energy_input"), ENERGY_OUTPUT("energy_output");
 
     private static final IOType[] ITEM_VALUES = new IOType[]{
             NONE, ITEM_INPUT, ITEM_OUTPUT
@@ -54,6 +55,18 @@ public enum IOType implements StringIdentifiable {
     private IOType next(IOType[] typeSet) {
         var index = Arrays.binarySearch(typeSet, this);
         return typeSet[index == typeSet.length - 1 ? 0 : ++index];
+    }
+
+    public Formatting[] getFormats() {
+        return switch (this) {
+            case ITEM_INPUT -> new Formatting[]{Formatting.GOLD, Formatting.BLUE};
+            case ITEM_OUTPUT -> new Formatting[]{Formatting.GOLD, Formatting.GOLD};
+            case FLUID_INPUT -> new Formatting[]{Formatting.BLUE, Formatting.BLUE};
+            case FLUID_OUTPUT -> new Formatting[]{Formatting.BLUE, Formatting.GOLD};
+            case ENERGY_INPUT -> new Formatting[]{Formatting.RED, Formatting.BLUE};
+            case ENERGY_OUTPUT -> new Formatting[]{Formatting.RED, Formatting.GOLD};
+            case NONE -> new Formatting[]{Formatting.GRAY};
+        };
     }
 
     public enum TransferType {
