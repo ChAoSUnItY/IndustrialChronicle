@@ -35,8 +35,8 @@ public class IndustrialFurnaceScreen extends HandledScreen<IndustrialFurnaceScre
             case COPPER -> "textures/gui/copper_industrial_furnace_gui.png";
             case IRON -> "textures/gui/iron_industrial_furnace_gui.png";
         });
-        titleX = (backgroundWidth - textRenderer.getWidth(title)) / 2;
-        playerInventoryTitleX = backgroundWidth - textRenderer.getWidth(playerInventoryTitle) - 2;
+        titleX = (backgroundWidth - textRenderer.getWidth(title)) / 2 + 10;
+        playerInventoryTitleX = backgroundWidth - textRenderer.getWidth(playerInventoryTitle) - 5;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class IndustrialFurnaceScreen extends HandledScreen<IndustrialFurnaceScre
         RenderSystem.setShaderTexture(0, steamTexture);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         var emptyTankHeight = (int) (74 * (1.0 - handler.getSteamPercentage()));
-        drawTexture(matrices, x + 5, tankTopY + emptyTankHeight, 0, 0, 22, 74 - emptyTankHeight, 16, 16);
+        drawTexture(matrices, x + 6, tankTopY + emptyTankHeight - 1, 0, 0, 22, 74 - emptyTankHeight, 16, 16);
         RenderSystem.setShaderTexture(0, background);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         if (handler.isBurning()) {

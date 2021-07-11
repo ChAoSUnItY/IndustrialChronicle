@@ -43,6 +43,6 @@
   "io.industrial_chronicle.energy": "Energy",
   "io.industrial_chronicle.input": "Input",
   "io.industrial_chronicle.output": "Output",
-  "info.industrial_chronicle.io": "IO Info: %s",
-  "info.industrial_chronicle.fluid": "Fluid : %s"
+  "info.industrial_chronicle.io": "I/O Status: %s",
+  "info.industrial_chronicle.fluid": "Fluid: %s"
 }

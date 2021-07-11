@@ -147,7 +147,6 @@ public class PumpBlockEntity extends MachineBlockEntity<PumpBlockEntity, PumpBlo
 
             if (changed) {
                 markDirty(world, pos, state);
-                pbe.update(pbe.getPumpedFluid());
                 pbe.sync();
             }
         }

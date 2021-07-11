@@ -35,8 +35,8 @@ public class BoilerScreen extends HandledScreen<BoilerScreenHandler> {
             case COPPER -> "textures/gui/copper_boiler_gui.png";
             case IRON -> "textures/gui/iron_boiler_gui.png";
         });
-        titleX = (backgroundWidth - textRenderer.getWidth(title)) / 2;
-        playerInventoryTitleX = backgroundWidth - textRenderer.getWidth(playerInventoryTitle) - 2;
+        titleX = (backgroundWidth - textRenderer.getWidth(title)) / 2 + 5;
+        playerInventoryTitleX = backgroundWidth - textRenderer.getWidth(playerInventoryTitle) - 5;
     }
 
     @Override

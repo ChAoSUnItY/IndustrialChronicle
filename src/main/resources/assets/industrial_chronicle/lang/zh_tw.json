@@ -1,4 +1,6 @@
 {
+  "block.minecraft.empty": "空",
+  "block.industrial_chronicle.steam": "蒸氣",
   "block.industrial_chronicle.wooden_pipe": "木製管道",
   "block.industrial_chronicle.copper_pipe": "銅製管道",
   "block.industrial_chronicle.iron_pipe": "鐵製管道",
@@ -40,5 +42,7 @@
   "io.industrial_chronicle.fluid": "液體",
   "io.industrial_chronicle.energy": "能量",
   "io.industrial_chronicle.input": "輸入",
-  "io.industrial_chronicle.output": "輸出"
+  "io.industrial_chronicle.output": "輸出",
+  "info.industrial_chronicle.io": "I/O 狀態: %s",
+  "info.industrial_chronicle.fluid": "液體: %s"
 }
