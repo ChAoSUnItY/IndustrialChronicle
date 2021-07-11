@@ -33,6 +33,10 @@ dependencies {
     }
 }
 
+minecraft {
+    accessWidener "src/main/resources/industrial_chronicle.accesswidener"
+}
+
 processResources {
     inputs.property "version", project.version
 

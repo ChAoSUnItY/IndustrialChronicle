@@ -60,7 +60,6 @@ public class IOBlockEntityRenderer<T extends MachineBlockEntity<?, ?> & BlockEnt
         drawCubeQuads(
                 matrices,
                 vertexConsumers,
-                WorldRenderer.getLightmapCoordinates(be.getWorld(), be.getCachedState(), be.getPos().up()),
                 be
         );
 
@@ -69,7 +68,6 @@ public class IOBlockEntityRenderer<T extends MachineBlockEntity<?, ?> & BlockEnt
 
     private void drawCubeQuads(MatrixStack matrixStack,
                                VertexConsumerProvider renderBuffer,
-                               int combinedLight,
                                T be) {
         var matrixPos = matrixStack.peek().getModel();
         var matrixNormal = matrixStack.peek().getNormal();
@@ -89,7 +87,7 @@ public class IOBlockEntityRenderer<T extends MachineBlockEntity<?, ?> & BlockEnt
                     renderBuffer.getBuffer(RenderLayer.getEntityCutoutNoCull(FLUID_IO[IOs.ordinal() - 1])),
                     MIDPOINTS[dir.getId()],
                     new Vector2f(0.0F, 1.0F),
-                    combinedLight
+                    WorldRenderer.getLightmapCoordinates(be.getWorld(), be.getCachedState(), be.getPos().offset(dir))
             );
         }
     }

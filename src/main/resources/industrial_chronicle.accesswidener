@@ -1,0 +1,3 @@
+accessWidener	v1      named
+
+accessible    method    net/minecraft/client/gui/DrawableHelper    fillGradient    (Lnet/minecraft/util/math/Matrix4f;Lnet/minecraft/client/render/BufferBuilder;IIIIIII)V

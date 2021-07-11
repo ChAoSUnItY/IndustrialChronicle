@@ -38,8 +38,8 @@ import java.util.Collections;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class PipeBlockEntity extends ConduitBlockEntity<PipeBlockEntity, PipeBlock> implements ImplementedFluidContainer {
-    public static final ICConfig.VariantConfigSet<Long> HOLDING_CAPACITY = IndustrialChronicle.config.pipeTransferRate.holdingCapacity;
-    public static final ICConfig.VariantConfigSet<Long> TRANSFER_RATE = IndustrialChronicle.config.pipeTransferRate.transferRate;
+    public static final ICConfig.VariantConfigSet<Long> HOLDING_CAPACITY = IndustrialChronicle.config.pipeConfig.holdingCapacity;
+    public static final ICConfig.VariantConfigSet<Long> TRANSFER_RATE = IndustrialChronicle.config.pipeConfig.transferRate;
 
     public final DefaultedList<FluidStack> fluids = DefaultedList.ofSize(1, new FluidStack(Fluids.EMPTY, getHoldingCapacity()));
 
@@ -89,6 +89,7 @@ public class PipeBlockEntity extends ConduitBlockEntity<PipeBlockEntity, PipeBlo
 
             if (changed) {
                 markDirty(world, pos, state);
+                pbe.sync();
             }
         }
     }

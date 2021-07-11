@@ -139,6 +139,7 @@ public class BoilerBlockEntity extends MachineBlockEntity<BoilerBlockEntity, Boi
 
             if (changed) {
                 markDirty(world, pos, state);
+                bbe.sync();
             }
         }
     }

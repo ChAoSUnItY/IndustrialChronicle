@@ -12,6 +12,7 @@
 
 package io.github.chaosunity.ic.blockentity.renderer;
 
+import io.github.chaosunity.ic.IndustrialChronicle;
 import io.github.chaosunity.ic.blockentity.conduit.PipeBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -27,6 +28,8 @@ public class PipeBlockEntityRenderer implements BlockEntityRenderer<PipeBlockEnt
 
     @Override
     public void render(PipeBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+        if (!IndustrialChronicle.devConfig.isDev) return;
+
         matrices.push();
 
         matrices.translate(0.5D, 0.5D, 0.5D);

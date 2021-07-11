@@ -1,4 +1,6 @@
 {
+  "block.minecraft.empty": "Empty",
+  "block.industrial_chronicle.steam": "Steam",
   "block.industrial_chronicle.wooden_pipe": "Wooden Pipe",
   "block.industrial_chronicle.copper_pipe": "Copper Pipe",
   "block.industrial_chronicle.iron_pipe": "Iron Pipe",
@@ -40,5 +42,7 @@
   "io.industrial_chronicle.fluid": "Fluid",
   "io.industrial_chronicle.energy": "Energy",
   "io.industrial_chronicle.input": "Input",
-  "io.industrial_chronicle.output": "Output"
+  "io.industrial_chronicle.output": "Output",
+  "info.industrial_chronicle.io": "IO Info: %s",
+  "info.industrial_chronicle.fluid": "Fluid : %s"
 }

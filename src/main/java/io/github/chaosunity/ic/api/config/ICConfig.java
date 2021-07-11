@@ -21,7 +21,7 @@ import me.shedaniel.autoconfig.annotation.Config;
 public final class ICConfig implements ConfigData {
     public BoilerConfigSet boilerConfig = new BoilerConfigSet();
     public IndustrialFurnaceConfigSet industrialFurnaceConfig = new IndustrialFurnaceConfigSet();
-    public PipeTransferRate pipeTransferRate = new PipeTransferRate();
+    public PipeConfigSet pipeConfig = new PipeConfigSet();
 
     @SafeVarargs
     public static <T> VariantConfigSet<T> of(T... v) {
@@ -42,7 +42,7 @@ public final class ICConfig implements ConfigData {
         public VariantConfigSet<Long> consumeRate = of(10L, 20L);
     }
 
-    public static final class PipeTransferRate {
+    public static final class PipeConfigSet {
         public VariantConfigSet<Long> holdingCapacity = of(1000L, 3000L, 5000L);
         public VariantConfigSet<Long> transferRate = of(10L, 20L, 40L);
     }

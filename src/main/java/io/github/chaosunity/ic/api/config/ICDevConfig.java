@@ -10,31 +10,13 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package io.github.chaosunity.ic;
+package io.github.chaosunity.ic.api.config;
 
-import io.github.chaosunity.ic.api.config.ICConfig;
-import io.github.chaosunity.ic.api.config.ICDevConfig;
-import io.github.chaosunity.ic.registry.*;
-import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
-import net.fabricmc.api.ModInitializer;
+import io.github.chaosunity.ic.IndustrialChronicle;
+import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.annotation.Config;
 
-public class IndustrialChronicle implements ModInitializer {
-    public static final String MODID = "industrial_chronicle";
-    public static ICConfig config;
-    public static ICDevConfig devConfig;
-
-    @Override
-    public void onInitialize() {
-        ICFluids.register();
-        ICItems.register();
-        ICBlocks.register();
-        ICBlockEntities.register();
-        ICOreGenerations.register();
-
-        AutoConfig.register(ICConfig.class, GsonConfigSerializer::new);
-        config = AutoConfig.getConfigHolder(ICConfig.class).getConfig();
-        AutoConfig.register(ICDevConfig.class, GsonConfigSerializer::new);
-        devConfig = AutoConfig.getConfigHolder(ICDevConfig.class).getConfig();
-    }
+@Config(name = IndustrialChronicle.MODID + "_dev")
+public final class ICDevConfig implements ConfigData {
+    public boolean isDev = false;
 }

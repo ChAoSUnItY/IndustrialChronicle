@@ -19,6 +19,7 @@
   "mixins": [
     "IndustrialChronicle.mixins.json"
   ],
+  "accessWidener" : "industrial_chronicle.accesswidener",
   "depends": {
     "fabricloader": ">=0.11.6",
     "fabric": "*",

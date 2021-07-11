@@ -109,9 +109,7 @@ public class IndustrialFurnaceBlockEntity extends MachineBlockEntity<IndustrialF
 
             if (changed) {
                 markDirty(world, pos, state);
-
-                if (!world.isClient)
-                    ifb.sync();
+                ifb.sync();
             }
         }
     }

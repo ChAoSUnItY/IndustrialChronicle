@@ -108,9 +108,12 @@ public class PumpBlockEntity extends MachineBlockEntity<PumpBlockEntity, PumpBlo
 
                     if (be2 instanceof PumpBlockEntity pbe2 && pbe2.getIOStatus().get(facing.getOpposite()) == IOType.FLUID_OUTPUT) {
                         changed = true;
-                        pbe2.getPumpedFluid().transfer(pbe.getPumpedFluid(), pbe.getPumpingRate(), true);
+                        pbe.getPumpedFluid().transfer(pbe2.getPumpedFluid(), pbe.getPumpingRate(), true);
                         pbe.getPumpedFluid().setFluid(pbe2.getPumpedFluid().getFluid());
                         pbe.getStoredSteam().remove(pbe.getConsumeRate());
+
+                        pbe2.markDirty();
+                        pbe2.sync();
                     }
                 }
             }
@@ -144,6 +147,8 @@ public class PumpBlockEntity extends MachineBlockEntity<PumpBlockEntity, PumpBlo
 
             if (changed) {
                 markDirty(world, pos, state);
+                pbe.update(pbe.getPumpedFluid());
+                pbe.sync();
             }
         }
     }
@@ -204,6 +209,11 @@ public class PumpBlockEntity extends MachineBlockEntity<PumpBlockEntity, PumpBlo
         if (getPumpedFluid().getFluid().matchesType(Fluids.EMPTY) && getPumpedFluid().mB != 0) {
             changed = true;
             getPumpedFluid().setFluid(stack.getFluid());
+        }
+
+        if (getPumpedFluid().mB == 0) {
+            changed = true;
+            getPumpedFluid().setFluid(Fluids.EMPTY);
         }
 
         if (changed) {
