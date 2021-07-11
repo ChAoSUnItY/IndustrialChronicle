@@ -23,15 +23,15 @@ import net.minecraft.util.Identifier;
 
 public final class ICItemGroups {
     public static ItemGroup IC_ITEMGROUP_ITEM = FabricItemGroupBuilder.create(
-            new Identifier(IndustrialChronicle.MODID, "ic_itemgroup_item"))
+            new Identifier(IndustrialChronicle.MODID, "item"))
             .icon(() -> new ItemStack(ICItems.WRENCH))
             .build();
     public static ItemGroup IC_ITEMGROUP_METAL = FabricItemGroupBuilder.create(
-            new Identifier(IndustrialChronicle.MODID, "ic_itemgroup_metal"))
+            new Identifier(IndustrialChronicle.MODID, "metal"))
             .icon(() -> new ItemStack(ICBlocks.ORES.get(OreVariant.TITANIUM)))
             .build();
     public static ItemGroup IC_ITEMGROUP_MECHANICAL = FabricItemGroupBuilder.create(
-            new Identifier(IndustrialChronicle.MODID, "ic_itemgroup_mechanical"))
+            new Identifier(IndustrialChronicle.MODID, "mechanical"))
             .icon(() -> new ItemStack(ICBlocks.BOILERS.get(MachineVariant.COPPER)))
             .build();
 }
