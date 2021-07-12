@@ -45,5 +45,5 @@
   "io.industrial_chronicle.output": "Output",
   "info.industrial_chronicle.io": "I/O Status: %s",
   "info.industrial_chronicle.fluid": "Fluid: %s",
-  "book.industrial_chronicle.landing_text": "OverSimplified Engineering Manual, requires big brain to read."
+  "book.industrial_chronicle.landing_text": "OverSimplified Engineering Manual, requires big brain to read. WIP!"
 }

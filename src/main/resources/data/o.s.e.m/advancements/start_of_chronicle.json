@@ -6,7 +6,7 @@
   },
   "rewards": {
     "loot": [
-      "o.s.e.m.:start_of_chronicle"
+      "o.s.e.m:start_of_chronicle"
     ]
   }
 }

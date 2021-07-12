@@ -1,0 +1,15 @@
+{
+  "name": "Wrench",
+  "icon": "industrial_chronicle:wrench",
+  "category": "industrial_chronicle:items",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "    Wrench is used to inspect some machinery's status and change machinery's I/O status (on each faces).$(br2)    To inspect, hold shift and stare at machines.$(br2)NOT EVERY MACHINES HAVE INSPECTABLE INFO!$(br2)    \"I believe this wrench must be came from a MRT engineer...\" - ChAoS-UnItY"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "industrial_chronicle:wrench"
+    }
+  ]
+}

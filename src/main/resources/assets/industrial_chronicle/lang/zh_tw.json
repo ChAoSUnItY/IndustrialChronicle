@@ -44,5 +44,6 @@
   "io.industrial_chronicle.input": "輸入",
   "io.industrial_chronicle.output": "輸出",
   "info.industrial_chronicle.io": "I/O 狀態: %s",
-  "info.industrial_chronicle.fluid": "液體: %s"
+  "info.industrial_chronicle.fluid": "液體: %s",
+  "book.industrial_chronicle.landing_text": "過於簡單化工程手冊(OverSimplified Engineering Manual)，你要有個大腦袋才讀得懂。 製作中！"
 }

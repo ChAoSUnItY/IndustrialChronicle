@@ -1,0 +1,42 @@
+{
+  "name": "Steam Age Machinery",
+  "icon": "industrial_chronicle:copper_boiler",
+  "category": "industrial_chronicle:steam_age",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "    You've survived through primitive age and stone age, it's time to start your industrial journey! Before starting, let's talk about steam age machinery, there are currently three machines available, pump, boiler, and industrial furnace. All machines have copper and iron variants.$(br2)    Pump is used to pump fluid source, simple enough."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "industrial_chronicle:copper_pump",
+      "recipe2": "industrial_chronicle:iron_pump"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "    But you need steam to kick start your pump, introducing you boiler!$(br2)    Boiler requires manually supplying water by right-clicking boiler with water bucket when your pump is not working, after supplied, right-click to open gui and insert fuel and you'll have a good time!"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "industrial_chronicle:copper_boiler",
+      "recipe2": "industrial_chronicle:iron_boiler"
+    },
+    {
+      "type": "patchouli:relations",
+      "entries": [
+        "industrial_chronicle:items/wrench",
+        "industrial_chronicle:transportation/pipe"
+      ],
+      "text": "    Before moving on to next machine, I highly suggest you to take a look at wrench and pipe to help you automate your steam generation."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "    Now the most important part is to make your steam usable, let's take a look at industrial_furnace, it's just a furnace but consuming steam.$(br2)    I know it's absurd, but that's all about it for this moment. :)"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "industrial_chronicle:copper_industrial_furnace",
+      "recipe2": "industrial_chronicle:iron_industrial_furnace"
+    }
+  ]
+}

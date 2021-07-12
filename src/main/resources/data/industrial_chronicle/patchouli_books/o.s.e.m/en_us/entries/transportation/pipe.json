@@ -1,0 +1,24 @@
+{
+  "name": "Pipes",
+  "icon": "industrial_chronicle:copper_pipe",
+  "category": "industrial_chronicle:transportation",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "    Seems you're having bad time dealing with steam/water transportation, pipe is your only solution.$(br2)    Pipes are able to hold amount of single fluid and transport it, here's how it work:"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Every tick pipe will try transfer fluid into nearby pipes/machines if nearby pipes/machines' fluid container is not full and have lesser fluid amount.$(li)Steam is the only fluid that can manually flows into nearby upward pipe, to transport non-steam fluid, pump it!$(li)NOTE: Wooden pipe will might break if it's holding steam or lava in 1/1000000.$(li)You cannot change connection of pipe manually at this moment, consider avoid compacting."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "industrial_chronicle:wooden_pipe",
+      "recipe2": "industrial_chronicle:copper_pipe"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "industrial_chronicle:iron_pipe"
+    }
+  ]
+}
